@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'auto-cabify-secret-key-2024';
+const JWT_SECRET = process.env.JWT_SECRET || 'auto-cabify-secret-change-me-in-production';
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
