@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#6C3FE0">
+  <title>Auto Manager</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Loading -->
+  <div id="loading" class="loading-overlay" style="display:none">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Login -->
+  <div id="login-screen" class="login-screen">
+    <div class="login-card">
+      <h1 class="login-title">🚗 Auto Manager</h1>
+      <p class="text-muted">Gestion de tu auto en Cabify</p>
+      <form onsubmit="handleLogin(event)" class="mt-4">
+        <div class="form-group">
+          <label>Tu nombre</label>
+          <input type="text" id="login-nombre" class="input"
+            placeholder="Ej: Henry" required>
+        </div>
+        <div class="form-group">
+          <label>Rol</label>
+          <select id="login-rol" class="input">
+            <option value="admin">Admin / Dueno</option>
+            <option value="conductor">Conductor</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Token de GitHub</label>
+          <input type="password" id="login-token" class="input"
+            placeholder="ghp_xxxxx..." required>
+          <p class="text-muted text-sm mt-1">
+            Generalo en GitHub > Settings > Developer settings >
+            Personal access tokens > Tokens (classic) >
+            Generate new token. Permiso: "repo" completo.
+          </p>
+        </div>
+        <button type="submit" class="btn btn-primary w-full">Entrar</button>
+        <p id="login-error" class="msg msg-error" style="display:none"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- App -->
+  <div id="app-screen" class="app-screen" style="display:none">
+    <header class="header">
+      <div>
+        <h1 class="header-title">Auto Manager</h1>
+        <p class="header-sub"><span id="user-name"></span> -
+          <span id="user-rol"></span></p>
+      </div>
+      <button onclick="App.logout()" class="btn-logout">Salir</button>
+    </header>
+    <main id="page-content" class="main-content"></main>
+    <nav id="bottom-nav" class="bottom-nav"></nav>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/github-api.js"></script>
+  <script src="js/pages/dashboard.js"></script>
+  <script src="js/pages/km.js"></script>
+  <script src="js/pages/entregas.js"></script>
+  <script src="js/pages/fotos.js"></script>
+  <script src="js/pages/gastos.js"></script>
+  <script src="js/pages/vehiculo.js"></script>
+  <script src="js/pages/notas.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    async function handleLogin(e) {
+      e.preventDefault();
+      const nombre = document.getElementById('login-nombre').value;
+      const rol = document.getElementById('login-rol').value;
+      const token = document.getElementById('login-token').value;
+      const errEl = document.getElementById('login-error');
+      errEl.style.display = 'none';
+      const ok = await App.login(token, nombre, rol);
+      if (!ok) {
+        errEl.textContent = 'Token invalido. Verifica que sea correcto.';
+        errEl.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>

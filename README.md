@@ -1,50 +1,52 @@
-# 🚗 Auto Manager - Gestión de Auto en Cabify
+# 🚗 Auto Manager - Gestion de Auto en Cabify
 
-App para gestionar el alquiler semanal de un auto en Cabify. Permite al admin/dueño y al conductor estar alineados con la operación.
+App 100% gratuita para gestionar el alquiler semanal de un auto en Cabify.
+**Sin servidor. Sin costos. Para siempre.**
+
+## Como funciona
+- La app corre en **GitHub Pages** (gratis)
+- Los datos se guardan como archivos **JSON en este repo**
+- Las fotos se suben directamente al repo (comprimidas)
+- Cada operacion es un commit automatico via la API de GitHub
 
 ## Modelo de negocio
 - Renta semanal fija: **$420,000 COP**
-- Día de entrega: **Sábados**
-- El conductor registra km diario y sube fotos del estado del carro cada sábado
-
+- Dia de entrega: **Sabados**
+- Conductor registra km diario, sube fotos del auto cada sabado
 
 ## Roles
-- **Admin/Dueño**: Control total - ve ingresos, gastos, confirma entregas, programa mantenimientos
-- **Conductor**: Registra km diario, paga renta semanal, sube fotos del estado del auto
-
-## Funcionalidades
-- Registro diario de kilometraje
-- Entregas semanales con control de pagos
-- Fotos del estado del vehículo (sábados)
-- Gastos del vehículo (admin)
-- Mantenimientos programados y alertas de vencimientos
-- Notas/comunicación entre todos
-- Dashboard con resumen financiero
-
-## Tech Stack
-- **Frontend**: React + Vite + Tailwind CSS (mobile-first)
-- **Backend**: Node.js + Express
-- **Base de datos**: SQLite (better-sqlite3)
-- **Auth**: JWT
-
-## Deploy en Railway (Producción)
-
-1. Crea cuenta en [railway.app](https://railway.app)
-2. Nuevo proyecto → "Deploy from GitHub repo"
-3. Selecciona este repo (`HenrySali/Auto`)
-4. Agrega variable de entorno: `JWT_SECRET` = (una clave secreta cualquiera)
-5. Railway detecta el Dockerfile y despliega automáticamente
-6. Te da una URL pública tipo `https://auto-production-xxxx.up.railway.app`
-
-## Desarrollo local
-
-```bash
-npm run install:all
-npm run dev:server   # Puerto 3001
-npm run dev:client   # Puerto 5173
-```
+- **Admin/Dueno**: Ve todo, confirma entregas, registra gastos y mantenimientos
+- **Conductor**: Registra km, entregas, fotos y notas
 
 ## Primer uso
-1. Registra una cuenta con rol "admin" (para ti y tu cuñado)
-2. Registra otra cuenta con rol "conductor"
-3. ¡Listo! Cada quien ve su interfaz según su rol
+
+1. Ve a la app: `https://henrysali.github.io/Auto/`
+2. Necesitas un **token de GitHub**:
+   - Ve a GitHub.com > Settings > Developer settings
+   - Personal access tokens > Tokens (classic)
+   - Generate new token
+   - Marca el permiso **"repo"** completo
+   - Copia el token (empieza con ghp_)
+3. Entra a la app con tu nombre, rol y token
+4. Listo!
+
+## Estructura de datos
+```
+data/
+  km.json           - Kilometraje diario
+  entregas.json     - Entregas semanales ($420k)
+  gastos.json       - Gastos del vehiculo
+  notas.json        - Comunicacion entre todos
+  vehiculo.json     - Mantenimientos y alertas
+  config.json       - Configuracion (renta, etc)
+  fotos_index.json  - Indice de fotos
+  fotos/            - Fotos del vehiculo
+docs/               - App web (GitHub Pages)
+```
+
+## Activar GitHub Pages
+1. Ve a Settings del repo
+2. Pages > Source: "Deploy from a branch"
+3. Branch: main, Folder: /docs
+4. Save
+5. En ~1 min estara en: https://henrysali.github.io/Auto/
