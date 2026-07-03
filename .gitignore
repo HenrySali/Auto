@@ -1,0 +1,8 @@
+node_modules/
+data/
+client/dist/
+client/public/uploads/*.jpg
+client/public/uploads/*.png
+client/public/uploads/*.webp
+.env
+*.db
