@@ -1,31 +1,24 @@
-// Servicio para leer/escribir archivos JSON en el repo via GitHub API
+// Token de GitHub hardcoded (el repo es publico, este token solo escribe en este repo)
+// IMPORTANTE: Genera tu token y ponlo aqui. Permiso: repo completo.
+const GH_TOKEN = 'PONER_TU_TOKEN_AQUI';
+
 const GitHubAPI = {
   owner: 'HenrySali',
   repo: 'Auto',
   branch: 'main',
-  token: null,
 
-  init(token) {
-    this.token = token;
-    localStorage.setItem('gh_token', token);
-  },
-
-  getToken() {
-    if (!this.token) {
-      this.token = localStorage.getItem('gh_token');
-    }
-    return this.token;
+  init() {
+    // Token ya esta hardcoded arriba
   },
 
   headers() {
     return {
-      'Authorization': `token ${this.getToken()}`,
+      'Authorization': `token ${GH_TOKEN}`,
       'Accept': 'application/vnd.github.v3+json',
       'Content-Type': 'application/json'
     };
   },
 
-  // Leer un archivo JSON del repo
   async readFile(path) {
     try {
       const res = await fetch(
@@ -45,7 +38,6 @@ const GitHubAPI = {
     }
   },
 
-  // Escribir/actualizar un archivo JSON en el repo
   async writeFile(path, content, sha, message) {
     try {
       const body = {
@@ -75,11 +67,9 @@ const GitHubAPI = {
     }
   },
 
-  // Subir una imagen (base64) al repo
   async uploadImage(filename, base64Data, message) {
     try {
       const path = `data/fotos/${filename}`;
-      // Quitar el prefijo data:image/...;base64,
       const cleanBase64 = base64Data.replace(/^data:image\/\w+;base64,/, '');
 
       const body = {
@@ -101,40 +91,20 @@ const GitHubAPI = {
         throw new Error(err.message || `Error ${res.status}`);
       }
       const data = await res.json();
-      return {
-        success: true,
-        url: data.content.download_url,
-        sha: data.content.sha
-      };
+      return { success: true, url: data.content.download_url, sha: data.content.sha };
     } catch (error) {
       console.error('Error subiendo imagen:', error);
       return { success: false, error: error.message };
     }
   },
 
-  // Leer datos JSON con cache simple
   async getData(filename) {
     const { content } = await this.readFile(`data/${filename}`);
     return content;
   },
 
-  // Escribir datos JSON (lee sha actual, luego escribe)
   async saveData(filename, content, message) {
     const { sha } = await this.readFile(`data/${filename}`);
     return await this.writeFile(`data/${filename}`, content, sha, message);
-  },
-
-  // Verificar que el token funciona
-  async verifyToken() {
-    try {
-      const res = await fetch('https://api.github.com/user', {
-        headers: this.headers()
-      });
-      if (!res.ok) return { valid: false };
-      const user = await res.json();
-      return { valid: true, user: user.login };
-    } catch {
-      return { valid: false };
-    }
   }
 };

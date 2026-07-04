@@ -1,3 +1,9 @@
+// Claves de acceso por rol
+const CLAVES = {
+  propietario: 'mauro2024',
+  conductor: 'conductor2024'
+};
+
 // Estado global de la app
 const App = {
   currentUser: null,
@@ -8,18 +14,16 @@ const App = {
     gastos: [],
     notas: [],
     vehiculo: { mantenimientos: [], alertas: [] },
-    config: { renta_semanal: 420000, dia_entrega: 'sabado', moneda: 'COP' },
-    usuarios: []
+    config: { renta_semanal: 420000, dia_entrega: 'sabado', moneda: 'COP' }
   },
 
   async init() {
-    const token = localStorage.getItem('gh_token');
     const userName = localStorage.getItem('user_name');
     const userRol = localStorage.getItem('user_rol');
 
-    if (token && userName) {
-      GitHubAPI.init(token);
-      this.currentUser = { nombre: userName, rol: userRol || 'admin' };
+    if (userName && userRol) {
+      this.currentUser = { nombre: userName, rol: userRol };
+      GitHubAPI.init();
       await this.loadAllData();
       this.showApp();
     } else {
@@ -63,7 +67,7 @@ const App = {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app-screen').style.display = 'flex';
     document.getElementById('user-name').textContent = this.currentUser.nombre;
-    document.getElementById('user-rol').textContent = this.currentUser.rol === 'admin' ? 'Admin/Dueño' : 'Conductor';
+    document.getElementById('user-rol').textContent = this.currentUser.rol === 'propietario' ? 'Propietario' : 'Conductor';
     this.updateNav();
     this.navigate('dashboard');
   },
@@ -77,7 +81,7 @@ const App = {
       { page: 'fotos', icon: '📷', label: 'Fotos' },
       { page: 'notas', icon: '📝', label: 'Notas' }
     ];
-    if (this.currentUser.rol === 'admin') {
+    if (this.currentUser.rol === 'propietario') {
       items.splice(4, 0, { page: 'gastos', icon: '💸', label: 'Gastos' });
       items.splice(5, 0, { page: 'vehiculo', icon: '🚗', label: 'Auto' });
     }
@@ -91,11 +95,9 @@ const App = {
 
   navigate(page) {
     this.currentPage = page;
-    // Highlight nav
     document.querySelectorAll('.nav-btn').forEach(b => {
       b.classList.toggle('active', b.dataset.page === page);
     });
-    // Render page
     const content = document.getElementById('page-content');
     switch(page) {
       case 'dashboard': Dashboard.render(content); break;
@@ -108,24 +110,25 @@ const App = {
     }
   },
 
-  async login(token, nombre, rol) {
-    GitHubAPI.init(token);
-    const verify = await GitHubAPI.verifyToken();
-    if (!verify.valid) {
-      alert('Token inválido. Verifica que sea correcto.');
+  login(nombre, clave) {
+    let rol = null;
+    if (clave === CLAVES.propietario) {
+      rol = 'propietario';
+    } else if (clave === CLAVES.conductor) {
+      rol = 'conductor';
+    } else {
       return false;
     }
-    localStorage.setItem('gh_token', token);
+
     localStorage.setItem('user_name', nombre);
     localStorage.setItem('user_rol', rol);
     this.currentUser = { nombre, rol };
-    await this.loadAllData();
-    this.showApp();
+    GitHubAPI.init();
+    this.loadAllData().then(() => this.showApp());
     return true;
   },
 
   logout() {
-    localStorage.removeItem('gh_token');
     localStorage.removeItem('user_name');
     localStorage.removeItem('user_rol');
     this.currentUser = null;
@@ -147,5 +150,4 @@ const App = {
   }
 };
 
-// Inicializar al cargar
 document.addEventListener('DOMContentLoaded', () => App.init());

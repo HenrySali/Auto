@@ -43,7 +43,7 @@ const EntregasPage = {
               </div>
               <div class="flex-between mt-2">
                 <span>Pagado: <strong>${App.formatMoney(e.monto_pagado)}</strong> / ${App.formatMoney(e.monto_debido)}</span>
-                ${App.currentUser.rol === 'admin' && !e.confirmado ? 
+                ${App.currentUser.rol === 'propietario' && !e.confirmado ? 
                   `<button onclick="EntregasPage.confirmar(${App.data.entregas.length - 1 - i})" class="btn btn-success btn-sm">Confirmar</button>` :
                   e.confirmado ? '<span class="text-success text-sm">✓ Confirmado</span>' : ''
                 }
