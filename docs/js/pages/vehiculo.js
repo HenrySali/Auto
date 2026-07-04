@@ -77,7 +77,7 @@ const VehiculoPage = {
     }
     // Abrir sitio de infracciones
     setTimeout(() => {
-      window.open('https://buenosaires.gob.ar/licenciasdeconducir/consulta-de-infracciones/index.php', '_blank');
+      window.open('https://buenosaires.gob.ar/licenciasdeconducir/consulta-de-infracciones/?actas=transito', '_blank');
     }, 500);
   },
   showAlertForm() {
