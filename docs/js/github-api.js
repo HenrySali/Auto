@@ -1,6 +1,6 @@
 // Token de GitHub hardcoded (el repo es publico, este token solo escribe en este repo)
 // IMPORTANTE: Genera tu token y ponlo aqui. Permiso: repo completo.
-const GH_TOKEN = 'PONER_TU_TOKEN_AQUI';
+const GH_TOKEN = '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';
 
 const GitHubAPI = {
   owner: 'HenrySali',
