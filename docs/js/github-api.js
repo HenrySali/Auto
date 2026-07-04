@@ -1,19 +1,33 @@
-// Token de GitHub hardcoded (el repo es publico, este token solo escribe en este repo)
-// IMPORTANTE: Genera tu token y ponlo aqui. Permiso: repo completo.
-const GH_TOKEN = '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';
-
+// GitHub API - Repo publico
+// LEER: sin token (el repo es publico)
+// ESCRIBIR: necesita token (se pide al propietario la primera vez)
 const GitHubAPI = {
   owner: 'HenrySali',
   repo: 'Auto',
   branch: 'main',
 
-  init() {
-    // Token ya esta hardcoded arriba
+  init() {},
+
+  getToken() {
+    return localStorage.getItem('gh_write_token') || null;
   },
 
-  headers() {
+  setToken(token) {
+    localStorage.setItem('gh_write_token', token);
+  },
+
+  hasWriteAccess() {
+    return !!this.getToken();
+  },
+
+  headersRead() {
+    return { 'Accept': 'application/vnd.github.v3+json' };
+  },
+
+  headersWrite() {
+    const token = this.getToken();
     return {
-      'Authorization': `token ${GH_TOKEN}`,
+      'Authorization': `token ${token}`,
       'Accept': 'application/vnd.github.v3+json',
       'Content-Type': 'application/json'
     };
@@ -23,7 +37,7 @@ const GitHubAPI = {
     try {
       const res = await fetch(
         `https://api.github.com/repos/${this.owner}/${this.repo}/contents/${path}?ref=${this.branch}&t=${Date.now()}`,
-        { headers: this.headers() }
+        { headers: this.headersRead() }
       );
       if (!res.ok) {
         if (res.status === 404) return { content: null, sha: null };
@@ -33,12 +47,15 @@ const GitHubAPI = {
       const content = JSON.parse(atob(data.content));
       return { content, sha: data.sha };
     } catch (error) {
-      console.error('Error leyendo archivo:', path, error);
+      console.error('Error leyendo:', path, error);
       return { content: null, sha: null };
     }
   },
 
   async writeFile(path, content, sha, message) {
+    if (!this.hasWriteAccess()) {
+      return { success: false, error: 'Sin acceso de escritura. Configura el token.' };
+    }
     try {
       const body = {
         message: message || `Actualizar ${path}`,
@@ -49,11 +66,7 @@ const GitHubAPI = {
 
       const res = await fetch(
         `https://api.github.com/repos/${this.owner}/${this.repo}/contents/${path}`,
-        {
-          method: 'PUT',
-          headers: this.headers(),
-          body: JSON.stringify(body)
-        }
+        { method: 'PUT', headers: this.headersWrite(), body: JSON.stringify(body) }
       );
       if (!res.ok) {
         const err = await res.json();
@@ -62,29 +75,26 @@ const GitHubAPI = {
       const data = await res.json();
       return { success: true, sha: data.content.sha };
     } catch (error) {
-      console.error('Error escribiendo archivo:', path, error);
+      console.error('Error escribiendo:', path, error);
       return { success: false, error: error.message };
     }
   },
 
   async uploadImage(filename, base64Data, message) {
+    if (!this.hasWriteAccess()) {
+      return { success: false, error: 'Sin acceso de escritura.' };
+    }
     try {
       const path = `data/fotos/${filename}`;
       const cleanBase64 = base64Data.replace(/^data:image\/\w+;base64,/, '');
-
       const body = {
         message: message || `Foto: ${filename}`,
         content: cleanBase64,
         branch: this.branch
       };
-
       const res = await fetch(
         `https://api.github.com/repos/${this.owner}/${this.repo}/contents/${path}`,
-        {
-          method: 'PUT',
-          headers: this.headers(),
-          body: JSON.stringify(body)
-        }
+        { method: 'PUT', headers: this.headersWrite(), body: JSON.stringify(body) }
       );
       if (!res.ok) {
         const err = await res.json();
@@ -93,7 +103,6 @@ const GitHubAPI = {
       const data = await res.json();
       return { success: true, url: data.content.download_url, sha: data.content.sha };
     } catch (error) {
-      console.error('Error subiendo imagen:', error);
       return { success: false, error: error.message };
     }
   },

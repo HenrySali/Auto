@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#6C3FE0">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Auto">
   <link rel="manifest" href="manifest.json">
@@ -41,6 +41,22 @@
     </div>
   </div>
 
+  <!-- Token setup (solo propietario, primera vez) -->
+  <div id="token-screen" style="display:none" class="login-screen">
+    <div class="login-card">
+      <h2 class="text-center font-bold">Configurar acceso</h2>
+      <p class="text-muted text-sm mt-1">Solo se hace una vez. Pega tu token de GitHub para poder guardar datos.</p>
+      <form onsubmit="handleToken(event)" class="mt-4">
+        <div class="form-group">
+          <label>Token de GitHub</label>
+          <input type="password" id="setup-token" class="input" placeholder="github_pat_..." required>
+        </div>
+        <button type="submit" class="btn btn-primary w-full">Guardar y continuar</button>
+        <p id="token-error" class="msg msg-error" style="display:none"></p>
+      </form>
+    </div>
+  </div>
+
   <!-- App -->
   <div id="app-screen" class="app-screen" style="display:none">
     <header class="header">
@@ -66,7 +82,6 @@
   <script src="js/pages/notas.js"></script>
   <script src="js/app.js"></script>
   <script>
-    // Registrar Service Worker para PWA
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js');
     }
@@ -82,6 +97,19 @@
         errEl.textContent = 'Clave incorrecta.';
         errEl.style.display = 'block';
       }
+    }
+
+    function handleToken(e) {
+      e.preventDefault();
+      const token = document.getElementById('setup-token').value;
+      if (!token.startsWith('github_pat_') && !token.startsWith('ghp_')) {
+        document.getElementById('token-error').textContent = 'El token debe empezar con github_pat_ o ghp_';
+        document.getElementById('token-error').style.display = 'block';
+        return;
+      }
+      GitHubAPI.setToken(token);
+      document.getElementById('token-screen').style.display = 'none';
+      App.afterTokenSetup();
     }
   </script>
 </body>

@@ -49,39 +49,6 @@ const VehiculoPage = {
         <input type="number" id="mt-km" class="input" placeholder="A los X km"></div>
         <button type="submit" class="btn btn-primary w-full btn-sm mt-1">Guardar</button></form>`;
   },
-
-  async saveAlerta(e) {
-    e.preventDefault();
-    App.data.vehiculo.alertas.push({ titulo: document.getElementById('al-titulo').value, fecha_vence: document.getElementById('al-fecha').value, tipo: document.getElementById('al-tipo').value, estado: 'activa', timestamp: new Date().toISOString() });
-    App.showLoading(true);
-    await GitHubAPI.saveData('vehiculo.json', App.data.vehiculo, 'Nueva alerta');
-    App.showLoading(false);
-    VehiculoPage.render(document.getElementById('page-content'));
-  },
-  async saveMant(e) {
-    e.preventDefault();
-    App.data.vehiculo.mantenimientos.push({ titulo: document.getElementById('mt-titulo').value, fecha: document.getElementById('mt-fecha').value||null, km_limite: parseInt(document.getElementById('mt-km').value)||null, estado: 'pendiente', timestamp: new Date().toISOString() });
-    App.showLoading(true);
-    await GitHubAPI.saveData('vehiculo.json', App.data.vehiculo, 'Nuevo mantenimiento');
-    App.showLoading(false);
-    VehiculoPage.render(document.getElementById('page-content'));
-  },
-  async resolverAlerta(idx) {
-    App.data.vehiculo.alertas[idx].estado = 'resuelta';
-    App.showLoading(true);
-    await GitHubAPI.saveData('vehiculo.json', App.data.vehiculo, 'Alerta resuelta');
-    App.showLoading(false);
-    VehiculoPage.render(document.getElementById('page-content'));
-  },
-  async completarMant(idx) {
-    App.data.vehiculo.mantenimientos[idx].estado = 'completado';
-    App.showLoading(true);
-    await GitHubAPI.saveData('vehiculo.json', App.data.vehiculo, 'Mantenimiento completado');
-    App.showLoading(false);
-    VehiculoPage.render(document.getElementById('page-content'));
-  }
-};
-
   async saveAlerta(e) {
     e.preventDefault();
     App.data.vehiculo.alertas.push({ titulo: document.getElementById('al-titulo').value, fecha_vence: document.getElementById('al-fecha').value, tipo: document.getElementById('al-tipo').value, estado: 'activa', timestamp: new Date().toISOString() });

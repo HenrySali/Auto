@@ -4,7 +4,6 @@ const CLAVES = {
   conductor: 'Leandro2026'
 };
 
-// Estado global de la app
 const App = {
   currentUser: null,
   currentPage: 'dashboard',
@@ -24,6 +23,13 @@ const App = {
     if (userName && userRol) {
       this.currentUser = { nombre: userName, rol: userRol };
       GitHubAPI.init();
+
+      // Si no tiene token de escritura, pedirlo
+      if (!GitHubAPI.hasWriteAccess()) {
+        this.showTokenSetup();
+        return;
+      }
+
       await this.loadAllData();
       this.showApp();
     } else {
@@ -61,11 +67,24 @@ const App = {
   showLogin() {
     document.getElementById('login-screen').style.display = 'flex';
     document.getElementById('app-screen').style.display = 'none';
+    document.getElementById('token-screen').style.display = 'none';
+  },
+
+  showTokenSetup() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'none';
+    document.getElementById('token-screen').style.display = 'flex';
+  },
+
+  async afterTokenSetup() {
+    await this.loadAllData();
+    this.showApp();
   },
 
   showApp() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app-screen').style.display = 'flex';
+    document.getElementById('token-screen').style.display = 'none';
     document.getElementById('user-name').textContent = this.currentUser.nombre;
     document.getElementById('user-rol').textContent = this.currentUser.rol === 'propietario' ? 'Propietario' : 'Conductor';
     this.updateNav();
@@ -124,7 +143,12 @@ const App = {
     localStorage.setItem('user_rol', rol);
     this.currentUser = { nombre, rol };
     GitHubAPI.init();
-    this.loadAllData().then(() => this.showApp());
+
+    if (!GitHubAPI.hasWriteAccess()) {
+      this.showTokenSetup();
+    } else {
+      this.loadAllData().then(() => this.showApp());
+    }
     return true;
   },
 
@@ -135,7 +159,6 @@ const App = {
     this.showLogin();
   },
 
-  // Helpers
   formatMoney(n) {
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(n);
   },
