@@ -106,12 +106,17 @@ const KmPage = {
   editar(fecha) {
     const record = App.data.km.find(k => k.fecha === fecha);
     if (!record) return;
-    KmPage.closeModal();
-    document.getElementById('km-fecha').value = record.fecha;
-    document.getElementById('km-inicio').value = record.km_inicio;
-    document.getElementById('km-fin').value = record.km_fin;
-    document.getElementById('km-notas').value = record.notas || '';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Cerrar modal
+    document.getElementById('km-modal').style.display = 'none';
+    // Cargar datos en el formulario sin re-renderizar
+    setTimeout(() => {
+      document.getElementById('km-fecha').value = record.fecha;
+      document.getElementById('km-inicio').value = record.km_inicio;
+      document.getElementById('km-fin').value = record.km_fin;
+      document.getElementById('km-notas').value = record.notas || '';
+      document.querySelector('#km-form button[type="submit"]').textContent = 'Actualizar';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
   },
 
   async save(e) {
