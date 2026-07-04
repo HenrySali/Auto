@@ -103,6 +103,7 @@ const App = {
       items.splice(3, 0, { page: 'fotos', icon: '📷', label: 'Fotos' });
       items.splice(4, 0, { page: 'gastos', icon: '💸', label: 'Gastos' });
       items.splice(5, 0, { page: 'vehiculo', icon: '🚗', label: 'Auto' });
+      items.push({ page: 'datos', icon: '💾', label: 'Datos' });
     }
     nav.innerHTML = items.map(i =>
       `<button onclick="App.navigate('${i.page}')" class="nav-btn" data-page="${i.page}">
@@ -126,6 +127,7 @@ const App = {
       case 'gastos': GastosPage.render(content); break;
       case 'vehiculo': VehiculoPage.render(content); break;
       case 'notas': NotasPage.render(content); break;
+      case 'datos': DatosPage.render(content); break;
     }
   },
 
