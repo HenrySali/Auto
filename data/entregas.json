@@ -19,7 +19,7 @@
     "monto_pagado": 420000,
     "estado": "pagado",
     "notas": "2 Entrega",
-    "confirmado": false,
+    "confirmado": true,
     "usuario": "Henry",
     "timestamp": "2026-07-04T18:10:03.364Z"
   }
