@@ -97,10 +97,10 @@ const App = {
       { page: 'dashboard', icon: '📊', label: 'Inicio' },
       { page: 'km', icon: '🛣️', label: 'Km' },
       { page: 'entregas', icon: '💰', label: 'Entregas' },
-      { page: 'fotos', icon: '📷', label: 'Fotos' },
       { page: 'notas', icon: '📝', label: 'Notas' }
     ];
     if (this.currentUser.rol === 'propietario') {
+      items.splice(3, 0, { page: 'fotos', icon: '📷', label: 'Fotos' });
       items.splice(4, 0, { page: 'gastos', icon: '💸', label: 'Gastos' });
       items.splice(5, 0, { page: 'vehiculo', icon: '🚗', label: 'Auto' });
     }

@@ -7,7 +7,7 @@ const FotosPage = {
       <form class="card" onsubmit="FotosPage.upload(event)">
         <h3 class="card-title">Subir fotos</h3>
         <div class="form-group">
-          <input type="file" id="foto-input" accept="image/jpeg,image/png,image/webp" multiple class="input">
+          <input type="file" id="foto-input" accept="image/jpeg,image/png,image/webp" multiple capture="environment" class="input">
         </div>
         <div class="grid-2">
           <div class="form-group"><label>Fecha</label><input type="date" id="foto-fecha" value="${App.today()}" class="input"></div>

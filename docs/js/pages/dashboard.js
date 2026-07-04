@@ -5,7 +5,6 @@ const Dashboard = {
     const totalIngresos = entregas.reduce((sum, e) => sum + (e.monto_pagado || 0), 0);
     const totalGastos = gastos.reduce((sum, g) => sum + (g.monto || 0), 0);
     const ganancia = totalIngresos - totalGastos;
-    const deuda = entregas.reduce((sum, e) => sum + ((e.monto_debido || config.renta_semanal) - (e.monto_pagado || 0)), 0);
 
     const ultimoKm = km.length > 0 ? km[km.length - 1] : null;
     const alertasActivas = vehiculo.alertas.filter(a => a.estado === 'activa');
@@ -27,10 +26,6 @@ const Dashboard = {
         <div class="card stat-card">
           <p class="stat-label">Ganancia neta</p>
           <p class="stat-value ${ganancia >= 0 ? 'success' : 'danger'}">${App.formatMoney(ganancia)}</p>
-        </div>
-        <div class="card stat-card">
-          <p class="stat-label">Deuda pendiente</p>
-          <p class="stat-value ${deuda > 0 ? 'warning' : 'success'}">${App.formatMoney(deuda)}</p>
         </div>
       </div>
 
