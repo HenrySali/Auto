@@ -6,5 +6,13 @@
     "notas": "Uno",
     "usuario": "Henry",
     "timestamp": "2026-07-04T18:08:02.540Z"
+  },
+  {
+    "fecha": "2026-06-27",
+    "km_inicio": 23564,
+    "km_fin": 24675,
+    "notas": "Dos Entrega",
+    "usuario": "Henry",
+    "timestamp": "2026-07-04T18:08:35.082Z"
   }
 ]
