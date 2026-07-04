@@ -88,6 +88,7 @@ const App = {
     document.getElementById('user-name').textContent = this.currentUser.nombre;
     document.getElementById('user-rol').textContent = this.currentUser.rol === 'propietario' ? 'Propietario' : 'Conductor';
     this.updateNav();
+    this.initSwipe();
     this.navigate('dashboard');
   },
 
@@ -111,6 +112,39 @@ const App = {
         <span class="nav-label">${i.label}</span>
       </button>`
     ).join('');
+    this.pages = items.map(i => i.page);
+  },
+
+  // Swipe navigation
+  pages: [],
+  touchStartX: 0,
+  touchEndX: 0,
+
+  initSwipe() {
+    const content = document.getElementById('page-content');
+    content.addEventListener('touchstart', (e) => {
+      this.touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    content.addEventListener('touchend', (e) => {
+      this.touchEndX = e.changedTouches[0].screenX;
+      this.handleSwipe();
+    }, { passive: true });
+  },
+
+  handleSwipe() {
+    const diff = this.touchStartX - this.touchEndX;
+    if (Math.abs(diff) < 60) return; // Movimiento muy corto, ignorar
+
+    const currentIdx = this.pages.indexOf(this.currentPage);
+    if (currentIdx === -1) return;
+
+    if (diff > 0 && currentIdx < this.pages.length - 1) {
+      // Swipe izquierda → siguiente
+      this.navigate(this.pages[currentIdx + 1]);
+    } else if (diff < 0 && currentIdx > 0) {
+      // Swipe derecha → anterior
+      this.navigate(this.pages[currentIdx - 1]);
+    }
   },
 
   navigate(page) {
@@ -119,16 +153,22 @@ const App = {
       b.classList.toggle('active', b.dataset.page === page);
     });
     const content = document.getElementById('page-content');
-    switch(page) {
-      case 'dashboard': Dashboard.render(content); break;
-      case 'km': KmPage.render(content); break;
-      case 'entregas': EntregasPage.render(content); break;
-      case 'fotos': FotosPage.render(content); break;
-      case 'gastos': GastosPage.render(content); break;
-      case 'vehiculo': VehiculoPage.render(content); break;
-      case 'notas': NotasPage.render(content); break;
-      case 'datos': DatosPage.render(content); break;
-    }
+    content.style.opacity = '0';
+    content.style.transform = 'translateX(10px)';
+    setTimeout(() => {
+      switch(page) {
+        case 'dashboard': Dashboard.render(content); break;
+        case 'km': KmPage.render(content); break;
+        case 'entregas': EntregasPage.render(content); break;
+        case 'fotos': FotosPage.render(content); break;
+        case 'gastos': GastosPage.render(content); break;
+        case 'vehiculo': VehiculoPage.render(content); break;
+        case 'notas': NotasPage.render(content); break;
+        case 'datos': DatosPage.render(content); break;
+      }
+      content.style.opacity = '1';
+      content.style.transform = 'translateX(0)';
+    }, 150);
   },
 
   login(nombre, clave) {
