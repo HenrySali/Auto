@@ -2,8 +2,26 @@ const VehiculoPage = {
   render(container) {
     const { mantenimientos, alertas } = App.data.vehiculo;
     const alertasActivas = alertas.filter(a => a.estado === 'activa');
+    const dniGuardado = localStorage.getItem('dni_conductor') || '';
+
     container.innerHTML = `
       <h2 class="page-title">🚗 Control Vehiculo</h2>
+
+      <!-- Consultar Infracciones -->
+      <div class="card">
+        <h3 class="card-title">🚦 Consultar Infracciones</h3>
+        <div class="form-group">
+          <label>DNI del conductor</label>
+          <div class="flex-row">
+            <input type="number" id="dni-input" class="input" placeholder="Ej: 35123456" value="${dniGuardado}">
+            <button onclick="VehiculoPage.guardarDni()" class="btn btn-primary btn-sm" style="white-space:nowrap">Guardar</button>
+          </div>
+        </div>
+        <button onclick="VehiculoPage.consultarInfracciones()" class="btn btn-danger w-full">🚦 Consultar Infracciones CABA</button>
+        <p class="text-muted text-sm mt-1">Se copia el DNI al portapapeles y abre la pagina. Solo pega y resuelve el captcha.</p>
+        <div id="dni-msg"></div>
+      </div>
+
       <div class="card">
         <div class="flex-between mb-2">
           <h3 class="card-title">⚠️ Alertas</h3>
@@ -30,6 +48,37 @@ const VehiculoPage = {
             <div>${m.estado==='pendiente'?`<button onclick="VehiculoPage.completarMant(${i})" class="btn btn-success btn-sm">Hecho</button>`:''}<span class="badge badge-${m.estado==='completado'?'success':'warning'}">${m.estado}</span></div></div>
           `).join('')}
       </div>`;
+  },
+
+  guardarDni() {
+    const dni = document.getElementById('dni-input').value;
+    if (dni) {
+      localStorage.setItem('dni_conductor', dni);
+      App.showMsg(document.getElementById('dni-msg'), 'DNI guardado ✓', false);
+    }
+  },
+
+  async consultarInfracciones() {
+    const dni = document.getElementById('dni-input').value || localStorage.getItem('dni_conductor');
+    if (!dni) {
+      App.showMsg(document.getElementById('dni-msg'), 'Ingresa un DNI primero', true);
+      return;
+    }
+    // Copiar DNI al portapapeles
+    try {
+      await navigator.clipboard.writeText(dni);
+      App.showMsg(document.getElementById('dni-msg'), 'DNI copiado! Pega en la pagina.', false);
+    } catch (e) {
+      // Fallback para móviles
+      const input = document.getElementById('dni-input');
+      input.select();
+      document.execCommand('copy');
+      App.showMsg(document.getElementById('dni-msg'), 'DNI copiado! Pega en la pagina.', false);
+    }
+    // Abrir sitio de infracciones
+    setTimeout(() => {
+      window.open('https://buenosaires.gob.ar/licenciasdeconducir/consulta-de-infracciones/index.php', '_blank');
+    }, 500);
   },
   showAlertForm() {
     document.getElementById('alert-form').style.display = 'block';
