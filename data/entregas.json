@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "semana_inicio": "2026-06-13",
+    "semana_fin": "2026-06-20",
+    "km_total": 23564,
+    "monto_debido": 420000,
+    "monto_pagado": 420000,
+    "estado": "pagado",
+    "notas": "1 Entrega",
+    "confirmado": false,
+    "usuario": "Henry",
+    "timestamp": "2026-07-04T18:09:23.788Z"
+  }
+]
