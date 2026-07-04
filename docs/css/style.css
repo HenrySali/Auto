@@ -121,6 +121,3 @@ textarea.input { resize: vertical; }
 
 
 /* Transiciones swipe */
-.main-content {
-  transition: opacity 0.15s ease, transform 0.15s ease;
-}

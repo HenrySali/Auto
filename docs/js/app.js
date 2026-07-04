@@ -153,22 +153,16 @@ const App = {
       b.classList.toggle('active', b.dataset.page === page);
     });
     const content = document.getElementById('page-content');
-    content.style.opacity = '0';
-    content.style.transform = 'translateX(10px)';
-    setTimeout(() => {
-      switch(page) {
-        case 'dashboard': Dashboard.render(content); break;
-        case 'km': KmPage.render(content); break;
-        case 'entregas': EntregasPage.render(content); break;
-        case 'fotos': FotosPage.render(content); break;
-        case 'gastos': GastosPage.render(content); break;
-        case 'vehiculo': VehiculoPage.render(content); break;
-        case 'notas': NotasPage.render(content); break;
-        case 'datos': DatosPage.render(content); break;
-      }
-      content.style.opacity = '1';
-      content.style.transform = 'translateX(0)';
-    }, 150);
+    switch(page) {
+      case 'dashboard': Dashboard.render(content); break;
+      case 'km': KmPage.render(content); break;
+      case 'entregas': EntregasPage.render(content); break;
+      case 'fotos': FotosPage.render(content); break;
+      case 'gastos': GastosPage.render(content); break;
+      case 'vehiculo': VehiculoPage.render(content); break;
+      case 'notas': NotasPage.render(content); break;
+      case 'datos': DatosPage.render(content); break;
+    }
   },
 
   login(nombre, clave) {
