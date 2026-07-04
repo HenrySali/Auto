@@ -19,6 +19,7 @@ const VehiculoPage = {
         </div>
         <button onclick="VehiculoPage.consultarInfracciones()" class="btn btn-danger w-full">🚦 Consultar Infracciones CABA</button>
         <p class="text-muted text-sm mt-1">Se copia el DNI al portapapeles y abre la pagina. Solo pega y resuelve el captcha.</p>
+        <p class="text-muted text-sm"><strong>Tip celular:</strong> si no ves el formulario completo, toca ⋮ → "Sitio de escritorio"</p>
         <div id="dni-msg"></div>
       </div>
 
