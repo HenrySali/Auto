@@ -1,32 +1,103 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <rect width="512" height="512" rx="100" fill="#6C3FE0"/>
-  <g transform="translate(40, 120)">
-    <!-- Cuerpo sedan Fiat Cronos -->
-    <path d="M60 185 L90 120 L140 80 L195 65 L290 65 L355 80 L380 120 L400 160 L410 185 L410 215 L390 225 L30 225 L10 215 L10 185 Z" fill="#C0C0C0"/>
-    <!-- Techo -->
-    <path d="M140 80 L155 38 L275 38 L300 65 L355 80" fill="#A8A8A8" stroke="#999" stroke-width="1"/>
-    <!-- Ventanas -->
-    <path d="M160 45 L215 45 L215 100 L148 92 Z" fill="#4A90D9" opacity="0.8"/>
-    <path d="M225 45 L285 45 L308 75 L308 100 L225 100 Z" fill="#4A90D9" opacity="0.8"/>
-    <!-- Linea de cintura -->
-    <path d="M60 130 L410 130" stroke="#999" stroke-width="2" fill="none"/>
-    <!-- Faros delanteros -->
-    <path d="M15 162 L60 152 L60 190 L15 190 Z" fill="#FFE066" opacity="0.9"/>
-    <!-- Faros traseros -->
-    <path d="M395 155 L410 155 L410 195 L390 195 Z" fill="#EF4444" opacity="0.9"/>
-    <!-- Parrilla FIAT -->
-    <rect x="15" y="190" width="55" height="22" rx="5" fill="#333"/>
-    <text x="25" y="206" font-size="14" fill="white" font-family="Arial" font-weight="bold">FIAT</text>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#7C4FEE"/>
+      <stop offset="100%" style="stop-color:#5530B0"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8E8E8"/>
+      <stop offset="40%" style="stop-color:#C8C8C8"/>
+      <stop offset="100%" style="stop-color:#A0A0A0"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#87CEEB"/>
+      <stop offset="100%" style="stop-color:#2C5F8A"/>
+    </linearGradient>
+    <linearGradient id="wheel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#333"/>
+      <stop offset="100%" style="stop-color:#111"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="100" fill="url(#bg)"/>
+  
+  <!-- Sombra del auto -->
+  <ellipse cx="256" cy="355" rx="170" ry="18" fill="rgba(0,0,0,0.3)"/>
+  
+  <g transform="translate(46, 140)">
+    <!-- Cuerpo inferior (faldones) -->
+    <path d="M55 175 L45 165 L40 145 L380 145 L378 165 L370 175 Z" fill="#888"/>
+    
+    <!-- Cuerpo principal sedan -->
+    <path d="M40 145 L55 105 L75 90 L345 90 L365 105 L380 145 Z" fill="url(#body)"/>
+    
+    <!-- Capó y maletero -->
+    <path d="M40 145 L35 135 L25 130 L25 145 Z" fill="#B8B8B8"/>
+    <path d="M380 145 L385 135 L395 130 L395 145 Z" fill="#B8B8B8"/>
+    
+    <!-- Techo y cabina -->
+    <path d="M120 90 L140 42 L150 30 L275 30 L295 42 L320 70 L345 90 Z" fill="#D0D0D0" stroke="#B0B0B0" stroke-width="1"/>
+    
+    <!-- Ventana delantera (parabrisas) -->
+    <path d="M125 86 L145 44 L155 35 L210 35 L210 86 Z" fill="url(#glass)" opacity="0.85"/>
+    
+    <!-- Ventana trasera -->
+    <path d="M220 35 L280 35 L300 50 L325 86 L220 86 Z" fill="url(#glass)" opacity="0.85"/>
+    
+    <!-- Pilar B -->
+    <path d="M210 35 L220 35 L220 86 L210 86 Z" fill="#999"/>
+    
+    <!-- Linea de carácter -->
+    <path d="M30 120 L390 115" stroke="#A0A0A0" stroke-width="2.5" fill="none"/>
+    
+    <!-- Faro delantero -->
+    <path d="M25 115 L55 108 L55 138 L25 138 Z" fill="#FFF" opacity="0.9"/>
+    <path d="M28 118 L52 112 L52 135 L28 135 Z" fill="#FFFACD" opacity="0.7"/>
+    
+    <!-- Faro trasero -->
+    <path d="M370 108 L395 115 L395 138 L370 138 Z" fill="#DC2626" opacity="0.9"/>
+    <path d="M373 111 L392 117 L392 135 L373 135 Z" fill="#FF4444" opacity="0.7"/>
+    
+    <!-- Parrilla frontal -->
+    <path d="M25 138 L55 138 L55 152 L25 152 Z" fill="#222"/>
+    <rect x="30" y="141" width="20" height="3" rx="1" fill="#555"/>
+    <rect x="30" y="146" width="20" height="3" rx="1" fill="#555"/>
+    
+    <!-- Logo FIAT en parrilla -->
+    <circle cx="40" cy="145" r="7" fill="#C0C0C0" stroke="#999" stroke-width="0.5"/>
+    
     <!-- Rueda delantera -->
-    <circle cx="115" cy="225" r="42" fill="#222"/>
-    <circle cx="115" cy="225" r="26" fill="#444"/>
-    <circle cx="115" cy="225" r="10" fill="#666"/>
+    <circle cx="110" cy="175" r="38" fill="url(#wheel)"/>
+    <circle cx="110" cy="175" r="30" fill="#1a1a1a"/>
+    <circle cx="110" cy="175" r="22" fill="#333"/>
+    <!-- Rayos -->
+    <path d="M110 155 L113 172 L110 175 L107 172 Z" fill="#555"/>
+    <path d="M110 195 L113 178 L110 175 L107 178 Z" fill="#555"/>
+    <path d="M90 175 L107 172 L110 175 L107 178 Z" fill="#555"/>
+    <path d="M130 175 L113 172 L110 175 L113 178 Z" fill="#555"/>
+    <path d="M96 161 L108 170 L110 175 L105 173 Z" fill="#555"/>
+    <circle cx="110" cy="175" r="8" fill="#666"/>
+    <circle cx="110" cy="175" r="4" fill="#888"/>
+    
     <!-- Rueda trasera -->
-    <circle cx="315" cy="225" r="42" fill="#222"/>
-    <circle cx="315" cy="225" r="26" fill="#444"/>
-    <circle cx="315" cy="225" r="10" fill="#666"/>
-    <!-- Manijas -->
-    <rect x="180" y="125" width="28" height="7" rx="3.5" fill="#888"/>
-    <rect x="260" y="125" width="28" height="7" rx="3.5" fill="#888"/>
+    <circle cx="310" cy="175" r="38" fill="url(#wheel)"/>
+    <circle cx="310" cy="175" r="30" fill="#1a1a1a"/>
+    <circle cx="310" cy="175" r="22" fill="#333"/>
+    <path d="M310 155 L313 172 L310 175 L307 172 Z" fill="#555"/>
+    <path d="M310 195 L313 178 L310 175 L307 178 Z" fill="#555"/>
+    <path d="M290 175 L307 172 L310 175 L307 178 Z" fill="#555"/>
+    <path d="M330 175 L313 172 L310 175 L313 178 Z" fill="#555"/>
+    <path d="M296 161 L308 170 L310 175 L305 173 Z" fill="#555"/>
+    <circle cx="310" cy="175" r="8" fill="#666"/>
+    <circle cx="310" cy="175" r="4" fill="#888"/>
+    
+    <!-- Manijas puertas -->
+    <rect x="170" y="100" width="22" height="5" rx="2.5" fill="#999"/>
+    <rect x="255" y="100" width="22" height="5" rx="2.5" fill="#999"/>
+    
+    <!-- Espejo retrovisor -->
+    <path d="M120 82 L115 78 L108 80 L110 86 L120 86 Z" fill="#A0A0A0"/>
   </g>
+  
+  <!-- Texto -->
+  <text x="256" y="420" text-anchor="middle" font-size="36" fill="white" font-family="Arial" font-weight="bold" opacity="0.9">CRONOS</text>
 </svg>
