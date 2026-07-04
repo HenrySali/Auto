@@ -68,19 +68,46 @@ const Dashboard = {
       ` : ''}
 
       ${entregas.length > 0 ? `
-        <div class="card">
-          <h3 class="card-title">Ultimas entregas</h3>
-          ${entregas.slice(-4).reverse().map(e => `
-            <div class="list-item">
-              <div>
-                <p class="text-sm font-medium">${e.semana_inicio} - ${e.semana_fin}</p>
-                <p class="text-muted">${e.km_total || 0} km</p>
-              </div>
-              <span class="badge badge-${e.estado === 'pagado' ? 'success' : e.estado === 'parcial' ? 'warning' : 'danger'}">${e.estado}</span>
-            </div>
-          `).join('')}
-        </div>
+        <button onclick="Dashboard.openEntregas()" class="btn btn-secondary w-full">📋 Ver historial de entregas</button>
       ` : ''}
+
+      <!-- Modal entregas -->
+      <div id="dash-entregas-modal" class="modal" style="display:none">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Historial de Entregas</h3>
+            <button onclick="Dashboard.closeEntregas()" class="modal-close">✕</button>
+          </div>
+          <div class="modal-body" id="dash-entregas-body"></div>
+        </div>
+      </div>
     `;
+  },
+
+  openEntregas() {
+    const { entregas, config } = App.data;
+    const body = document.getElementById('dash-entregas-body');
+
+    body.innerHTML = entregas.slice().reverse().map(e => `
+      <div class="card" style="margin-bottom:0.5rem">
+        <div class="flex-between">
+          <div>
+            <p class="font-medium">${e.semana_inicio} → ${e.semana_fin}</p>
+            <p class="text-muted">${e.km_total || 0} km${e.notas ? ' • ' + e.notas : ''}</p>
+          </div>
+          <span class="badge badge-${e.estado === 'pagado' ? 'success' : e.estado === 'parcial' ? 'warning' : 'danger'}">${e.estado}</span>
+        </div>
+        <div class="flex-between mt-1">
+          <span class="text-sm">Pagado: <strong>${App.formatMoney(e.monto_pagado)}</strong> / ${App.formatMoney(e.monto_debido)}</span>
+          ${e.confirmado ? '<span class="text-success text-sm">✓ Confirmado</span>' : '<span class="text-muted text-sm">Sin confirmar</span>'}
+        </div>
+      </div>
+    `).join('') || '<p class="text-muted text-center">Sin entregas</p>';
+
+    document.getElementById('dash-entregas-modal').style.display = 'flex';
+  },
+
+  closeEntregas() {
+    document.getElementById('dash-entregas-modal').style.display = 'none';
   }
 };
