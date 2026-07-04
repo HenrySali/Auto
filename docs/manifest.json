@@ -1,0 +1,24 @@
+{
+  "name": "Auto Manager",
+  "short_name": "Auto",
+  "description": "Gestion del auto de Mauro en Cabify",
+  "start_url": "/Auto/",
+  "display": "standalone",
+  "background_color": "#F9FAFB",
+  "theme_color": "#6C3FE0",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

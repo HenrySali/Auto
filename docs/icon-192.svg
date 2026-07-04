@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <rect width="192" height="192" rx="40" fill="#6C3FE0"/>
+  <g transform="translate(24, 50)">
+    <!-- Cuerpo del auto -->
+    <path d="M20 55 L30 30 L50 20 L95 20 L115 30 L125 55 L130 60 L130 80 L120 80 L120 75 L25 75 L25 80 L15 80 L15 60 Z" fill="white" opacity="0.95"/>
+    <!-- Ventanas -->
+    <path d="M35 32 L50 24 L75 24 L75 45 L32 45 Z" fill="#6C3FE0" opacity="0.6"/>
+    <path d="M80 24 L110 24 L118 35 L118 45 L80 45 Z" fill="#6C3FE0" opacity="0.6"/>
+    <!-- Rueda izquierda -->
+    <circle cx="40" cy="75" r="14" fill="#333"/>
+    <circle cx="40" cy="75" r="7" fill="#666"/>
+    <circle cx="40" cy="75" r="3" fill="#999"/>
+    <!-- Rueda derecha -->
+    <circle cx="105" cy="75" r="14" fill="#333"/>
+    <circle cx="105" cy="75" r="7" fill="#666"/>
+    <circle cx="105" cy="75" r="3" fill="#999"/>
+    <!-- Luces -->
+    <rect x="18" y="48" width="8" height="5" rx="2" fill="#F59E0B"/>
+    <rect x="120" y="48" width="8" height="5" rx="2" fill="#EF4444"/>
+  </g>
+</svg>
