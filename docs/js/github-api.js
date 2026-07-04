@@ -21,6 +21,13 @@ const GitHubAPI = {
   },
 
   headersRead() {
+    const token = this.getToken();
+    if (token) {
+      return {
+        'Authorization': `token ${token}`,
+        'Accept': 'application/vnd.github.v3+json'
+      };
+    }
     return { 'Accept': 'application/vnd.github.v3+json' };
   },
 
