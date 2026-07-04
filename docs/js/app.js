@@ -1,7 +1,7 @@
 // Claves de acceso por rol
 const CLAVES = {
-  propietario: 'mauro2024',
-  conductor: 'conductor2024'
+  propietario: 'Socios2026',
+  conductor: 'Leandro2026'
 };
 
 // Estado global de la app
