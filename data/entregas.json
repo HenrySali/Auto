@@ -31,7 +31,7 @@
     "monto_pagado": 420000,
     "estado": "pagado",
     "notas": "3",
-    "confirmado": false,
+    "confirmado": true,
     "usuario": "Mauricio",
     "timestamp": "2026-07-05T16:10:51.539Z"
   }
