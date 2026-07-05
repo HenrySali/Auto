@@ -22,5 +22,17 @@
     "confirmado": true,
     "usuario": "Henry",
     "timestamp": "2026-07-04T18:10:03.364Z"
+  },
+  {
+    "semana_inicio": "2026-06-27",
+    "semana_fin": "2026-07-03",
+    "km_total": 25801,
+    "monto_debido": 420000,
+    "monto_pagado": 420000,
+    "estado": "pagado",
+    "notas": "3",
+    "confirmado": false,
+    "usuario": "Mauricio",
+    "timestamp": "2026-07-05T16:10:51.539Z"
   }
 ]
