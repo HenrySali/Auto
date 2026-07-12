@@ -30,5 +30,13 @@
     "notas": "3 ",
     "usuario": "Mauricio",
     "timestamp": "2026-07-05T16:06:56.035Z"
+  },
+  {
+    "fecha": "2026-07-12",
+    "km_inicio": 25801,
+    "km_fin": 26868,
+    "notas": "5",
+    "usuario": "Henry",
+    "timestamp": "2026-07-12T14:36:22.657Z"
   }
 ]
