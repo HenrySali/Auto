@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "categoria": "mantenimiento",
+    "monto": 80000,
+    "fecha": "2026-07-18",
+    "descripcion": "Cabify despedida Nadia - compra de dolares",
+    "usuario": "Henry",
+    "timestamp": "2026-07-22T03:13:11.705Z"
+  }
+]
