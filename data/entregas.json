@@ -46,5 +46,17 @@
     "confirmado": true,
     "usuario": "Henry",
     "timestamp": "2026-07-12T14:37:21.500Z"
+  },
+  {
+    "semana_inicio": "2026-07-10",
+    "semana_fin": "2026-07-18",
+    "km_total": 1456,
+    "monto_debido": 420000,
+    "monto_pagado": 420000,
+    "estado": "pagado",
+    "notas": "-80000 dolares y 30000 cabify aeropuerto despedida de Nadia a Colombia, este km es hasta hoy martes  21 06 de 2026",
+    "confirmado": false,
+    "usuario": "Henry",
+    "timestamp": "2026-07-22T02:57:49.452Z"
   }
 ]
