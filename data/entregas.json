@@ -55,7 +55,7 @@
     "monto_pagado": 420000,
     "estado": "pagado",
     "notas": "-80000 dolares y 30000 cabify aeropuerto despedida de Nadia a Colombia, este km es hasta hoy martes  21 06 de 2026",
-    "confirmado": false,
+    "confirmado": true,
     "usuario": "Henry",
     "timestamp": "2026-07-22T02:57:49.452Z"
   }
