@@ -1,0 +1,14 @@
+{
+  "users": [
+    {"id": 1, "name": "Henry", "password": "Socios2026", "role": "admin"},
+    {"id": 2, "name": "Mauricio", "password": "Socios2026", "role": "admin"},
+    {"id": 3, "name": "Nadia", "password": "Socios2026", "role": "admin"}
+  ],
+  "km": [],
+  "deliveries": [],
+  "expenses": [],
+  "petty_cash": [],
+  "notes": [],
+  "savings": [],
+  "savings_goal": {"target": 0, "title": "Meta de ahorro"}
+}
