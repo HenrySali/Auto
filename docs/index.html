@@ -92,7 +92,7 @@ nav a span.icon{font-size:1.2rem;margin-bottom:2px}
 <div id="app-screen" class="hidden">
 <header>
 <div><h1>Auto Manager</h1><p class="user-info" id="header-user">-</p></div>
-<button onclick="logout()">Salir</button>
+<div style="display:flex;gap:8px"><button onclick="backup()" title="Backup">💾</button><button onclick="logout()">Salir</button></div>
 </header>
 <div class="container">
 <div id="page-inicio"></div>
@@ -101,6 +101,7 @@ nav a span.icon{font-size:1.2rem;margin-bottom:2px}
 <div id="page-gastos" class="hidden"></div>
 <div id="page-caja" class="hidden"></div>
 <div id="page-notas" class="hidden"></div>
+<div id="page-ahorro" class="hidden"></div>
 </div>
 <nav id="main-nav"></nav>
 </div>
@@ -121,7 +122,7 @@ async function handleRegister(){const n=document.getElementById('reg-nombre').va
 function logout(){currentUser=null;localStorage.removeItem('current_user');document.getElementById('app-screen').classList.add('hidden');document.getElementById('login-screen').classList.remove('hidden')}
 function saveToken(){const t=document.getElementById('setup-token').value.trim();if(!t.startsWith('github_pat_')&&!t.startsWith('ghp_')){document.getElementById('token-error').textContent='Token invalido';document.getElementById('token-error').classList.remove('hidden');return}ghToken=t;localStorage.setItem('gh_token',t);document.getElementById('token-screen').classList.add('hidden');init()}
 
-function buildNav(){document.getElementById('main-nav').innerHTML=[{id:'inicio',i:'📊',l:'Inicio'},{id:'km',i:'🛣️',l:'Km'},{id:'entregas',i:'💰',l:'Entregas'},{id:'gastos',i:'💸',l:'Gastos'},{id:'caja',i:'📦',l:'Caja'},{id:'notas',i:'📝',l:'Notas'}].map(x=>`<a href="#" onclick="nav('${x.id}')" id="nav-${x.id}" class="${x.id===currentPage?'active':''}"><span class="icon">${x.i}</span>${x.l}</a>`).join('')}
+function buildNav(){document.getElementById('main-nav').innerHTML=[{id:'inicio',i:'📊',l:'Inicio'},{id:'km',i:'🛣️',l:'Km'},{id:'entregas',i:'💰',l:'Entregas'},{id:'gastos',i:'💸',l:'Gastos'},{id:'caja',i:'📦',l:'Caja'},{id:'ahorro',i:'🐷',l:'Ahorro'},{id:'notas',i:'📝',l:'Notas'}].map(x=>`<a href="#" onclick="nav('${x.id}')" id="nav-${x.id}" class="${x.id===currentPage?'active':''}"><span class="icon">${x.i}</span>${x.l}</a>`).join('')}
 function nav(p){document.querySelectorAll('[id^="page-"]').forEach(el=>el.classList.add('hidden'));document.getElementById('page-'+p).classList.remove('hidden');document.querySelectorAll('#main-nav a').forEach(a=>a.classList.remove('active'));const el=document.getElementById('nav-'+p);if(el)el.classList.add('active');currentPage=p;render(p)}
 
 function fmt(n){return new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(n)}
@@ -131,7 +132,7 @@ function monthRange(){const now=new Date(),s=new Date(now.getFullYear(),now.getM
 function inR(d,f,t){return d>=f&&d<=t}
 function uid(){return Date.now()+''+Math.random().toString(36).substr(2,5)}
 
-function render(p){switch(p){case'inicio':rDash();break;case'km':rKm();break;case'entregas':rEnt();break;case'gastos':rGas();break;case'caja':rCaja();break;case'notas':rNotas();break}}
+function render(p){switch(p){case'inicio':rDash();break;case'km':rKm();break;case'entregas':rEnt();break;case'gastos':rGas();break;case'caja':rCaja();break;case'ahorro':rAhorro();break;case'notas':rNotas();break}}
 
 function rDash(){let f=null,t=null;if(dashPeriod==='week'){const r=weekRange();f=r.from;t=r.to}else if(dashPeriod==='month'){const r=monthRange();f=r.from;t=r.to}
 const inc=db.deliveries.filter(d=>!f||inR(d.week_start,f,t)).reduce((s,d)=>s+(d.amount_paid||0),0);
@@ -159,6 +160,18 @@ async function delCaja(id){if(!confirm('Eliminar?'))return;db.petty_cash=db.pett
 
 function rNotas(){const recs=[...db.notes].sort((a,b)=>(b.created_at||'').localeCompare(a.created_at||''));document.getElementById('page-notas').innerHTML=`<h2 style="font-size:1.2rem;font-weight:700;margin-bottom:12px">Notas</h2><div class="card"><form onsubmit="addNota(event)"><textarea id="nota-c" rows="3" placeholder="Escribe una nota..." required></textarea><button class="btn" type="submit">Enviar</button></form></div><div class="card">${recs.length===0?'<p class="text-xs">Sin notas</p>':recs.map(n=>`<div class="list-item"><div class="flex-between"><strong class="text-sm text-primary">${n.author}</strong><span class="text-xs">${(n.created_at||'').split('T')[0]}</span></div><p class="text-sm mt-2">${n.content}</p></div>`).join('')}</div>`}
 async function addNota(e){e.preventDefault();db.notes.push({id:uid(),author:currentUser.name,content:document.getElementById('nota-c').value,created_at:new Date().toISOString()});await saveDB();rNotas()}
+
+function backup(){const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='auto-backup-'+today()+'.json';a.click();URL.revokeObjectURL(url)}
+
+function rAhorro(){const recs=[...db.savings].sort((a,b)=>b.date.localeCompare(a.date));const dep=recs.filter(r=>r.type==='deposito').reduce((s,r)=>s+r.amount,0);const ret=recs.filter(r=>r.type==='retiro').reduce((s,r)=>s+r.amount,0);const saldo=dep-ret;const goal=db.savings_goal;const prog=goal.target>0?Math.min(100,Math.round((saldo/goal.target)*100)):0;
+document.getElementById('page-ahorro').innerHTML=`<h2 style="font-size:1.2rem;font-weight:700;margin-bottom:12px">Ahorro</h2>
+<div class="card stat" style="background:rgba(16,185,129,.05);border-color:rgba(16,185,129,.2)"><p class="value text-success">${fmt(saldo)}</p><p class="label-text">Saldo ahorrado</p><div style="display:flex;justify-content:space-around;margin-top:8px" class="text-xs"><span>⬆️ ${fmt(dep)}</span><span>⬇️ ${fmt(ret)}</span></div></div>
+${goal.target>0?`<div class="card"><h3 class="text-sm mb-2" style="font-weight:600">🎯 ${goal.title}</h3><div style="background:#eee;border-radius:6px;height:10px;overflow:hidden"><div style="background:${prog>=100?'#10B981':'#6C3FE0'};height:100%;width:${prog}%;border-radius:6px"></div></div><div class="flex-between text-xs mt-2"><span class="text-primary" style="font-weight:700">${prog}%</span><span>Meta: ${fmt(goal.target)}</span></div>${prog>=100?'<p class="text-xs text-success mt-2" style="font-weight:600">¡Meta alcanzada! 🎉</p>':`<p class="text-xs mt-2">Faltan ${fmt(goal.target-saldo)}</p>`}</div>`:''}
+<div class="card"><h3 class="text-sm mb-2" style="font-weight:600">Definir meta</h3><div class="grid-2"><input type="text" id="ah-title" placeholder="Nombre meta" value="${goal.title}"><input type="number" id="ah-target" placeholder="Monto" value="${goal.target||''}"></div><button class="btn" onclick="setGoal()">Guardar meta</button></div>
+<div class="card"><h3 class="text-sm mb-2" style="font-weight:600">Nuevo movimiento</h3><form onsubmit="addAhorro(event)"><select id="ah-type"><option value="deposito">⬆️ Deposito</option><option value="retiro">⬇️ Retiro</option></select><div class="grid-2"><div><label>Monto</label><input type="number" id="ah-amt" required></div><div><label>Fecha</label><input type="date" id="ah-date" value="${today()}" required></div></div><label>Descripcion</label><input type="text" id="ah-desc"><button class="btn" type="submit">Registrar</button></form></div>
+<div class="card">${recs.length===0?'<p class="text-xs">Sin movimientos</p>':recs.map(r=>`<div class="list-item flex-between"><div><span>${r.type==='deposito'?'⬆️':'⬇️'}</span> <strong class="text-sm">${r.type}</strong><br><span class="text-xs">${r.date} ${r.description||''}</span></div><span style="font-weight:700" class="${r.type==='deposito'?'text-success':'text-danger'}">${r.type==='deposito'?'+':'-'}${fmt(r.amount)}</span></div>`).join('')}</div>`}
+async function addAhorro(e){e.preventDefault();db.savings.push({id:uid(),type:document.getElementById('ah-type').value,amount:+document.getElementById('ah-amt').value,date:document.getElementById('ah-date').value,description:document.getElementById('ah-desc').value});await saveDB();rAhorro()}
+async function setGoal(){db.savings_goal={target:+document.getElementById('ah-target').value||0,title:document.getElementById('ah-title').value||'Meta de ahorro'};await saveDB();rAhorro()}
 
 function showApp(){document.getElementById('login-screen').classList.add('hidden');document.getElementById('app-screen').classList.remove('hidden');document.getElementById('header-user').textContent=`${currentUser.name} - ${currentUser.role==='admin'?'Admin':'Conductor'}`;buildNav();nav('inicio')}
 
