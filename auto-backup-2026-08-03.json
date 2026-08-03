@@ -1,0 +1,192 @@
+{
+  "fecha_backup": "2026-08-03T02:22:29.639Z",
+  "version": "2.0",
+  "km": [
+    {
+      "fecha": "2026-06-20",
+      "km_inicio": 22318,
+      "km_fin": 23564,
+      "notas": "Uno",
+      "usuario": "Henry",
+      "timestamp": "2026-07-04T19:22:26.951Z"
+    },
+    {
+      "fecha": "2026-06-27",
+      "km_inicio": 23564,
+      "km_fin": 24675,
+      "notas": "Dos Entrega",
+      "usuario": "Henry",
+      "timestamp": "2026-07-04T18:08:35.082Z"
+    },
+    {
+      "fecha": "2026-07-04",
+      "km_inicio": 24575,
+      "km_fin": 25801,
+      "notas": "4",
+      "usuario": "Mauricio",
+      "timestamp": "2026-07-05T16:09:28.630Z"
+    },
+    {
+      "fecha": "2026-07-05",
+      "km_inicio": 24575,
+      "km_fin": 25801,
+      "notas": "3 ",
+      "usuario": "Mauricio",
+      "timestamp": "2026-07-05T16:06:56.035Z"
+    },
+    {
+      "fecha": "2026-07-12",
+      "km_inicio": 25801,
+      "km_fin": 26868,
+      "notas": "5",
+      "usuario": "Henry",
+      "timestamp": "2026-07-12T14:36:22.657Z"
+    },
+    {
+      "fecha": "2026-07-22",
+      "km_inicio": 26868,
+      "km_fin": 28324,
+      "notas": null,
+      "usuario": "Henry",
+      "timestamp": "2026-07-22T02:54:38.844Z"
+    },
+    {
+      "fecha": "2026-07-26",
+      "km_inicio": 28324,
+      "km_fin": 29135,
+      "notas": null,
+      "usuario": "Henry",
+      "timestamp": "2026-07-26T12:46:15.644Z"
+    },
+    {
+      "fecha": "2026-08-02",
+      "km_inicio": 29135,
+      "km_fin": 30280,
+      "notas": null,
+      "usuario": "Henry",
+      "timestamp": "2026-08-03T01:06:48.346Z"
+    }
+  ],
+  "entregas": [
+    {
+      "semana_inicio": "2026-06-13",
+      "semana_fin": "2026-06-20",
+      "km_total": 23564,
+      "monto_debido": 420000,
+      "monto_pagado": 420000,
+      "estado": "pagado",
+      "notas": "1 Entrega",
+      "confirmado": true,
+      "usuario": "Henry",
+      "timestamp": "2026-07-04T18:09:23.788Z"
+    },
+    {
+      "semana_inicio": "2026-06-20",
+      "semana_fin": "2026-06-27",
+      "km_total": 24675,
+      "monto_debido": 420000,
+      "monto_pagado": 420000,
+      "estado": "pagado",
+      "notas": "2 Entrega",
+      "confirmado": true,
+      "usuario": "Henry",
+      "timestamp": "2026-07-04T18:10:03.364Z"
+    },
+    {
+      "semana_inicio": "2026-06-27",
+      "semana_fin": "2026-07-03",
+      "km_total": 25801,
+      "monto_debido": 420000,
+      "monto_pagado": 420000,
+      "estado": "pagado",
+      "notas": "3",
+      "confirmado": true,
+      "usuario": "Mauricio",
+      "timestamp": "2026-07-05T16:10:51.539Z"
+    },
+    {
+      "semana_inicio": "2026-07-04",
+      "semana_fin": "2026-07-10",
+      "km_total": 1067,
+      "monto_debido": 420000,
+      "monto_pagado": 420000,
+      "estado": "pagado",
+      "notas": "5",
+      "confirmado": true,
+      "usuario": "Henry",
+      "timestamp": "2026-07-12T14:37:21.500Z"
+    },
+    {
+      "semana_inicio": "2026-07-10",
+      "semana_fin": "2026-07-18",
+      "km_total": 1456,
+      "monto_debido": 420000,
+      "monto_pagado": 420000,
+      "estado": "pagado",
+      "notas": "-80000 dolares y 30000 cabify aeropuerto despedida de Nadia a Colombia, este km es hasta hoy martes  21 06 de 2026",
+      "confirmado": true,
+      "usuario": "Henry",
+      "timestamp": "2026-07-22T02:57:49.452Z"
+    },
+    {
+      "semana_inicio": "2026-07-17",
+      "semana_fin": "2026-07-25",
+      "km_total": 29135,
+      "monto_debido": 420000,
+      "monto_pagado": 420000,
+      "estado": "pagado",
+      "notas": null,
+      "confirmado": true,
+      "usuario": "Henry",
+      "timestamp": "2026-07-26T12:47:17.250Z"
+    },
+    {
+      "semana_inicio": "2026-07-24",
+      "semana_fin": "2026-08-01",
+      "km_total": 1145,
+      "monto_debido": 420000,
+      "monto_pagado": 420000,
+      "estado": "pagado",
+      "notas": null,
+      "confirmado": true,
+      "usuario": "Henry",
+      "timestamp": "2026-08-03T01:08:25.953Z"
+    }
+  ],
+  "gastos": [
+    {
+      "categoria": "mantenimiento",
+      "monto": 80000,
+      "fecha": "2026-07-18",
+      "descripcion": "Cabify despedida Nadia - compra de dolares",
+      "usuario": "Henry",
+      "timestamp": "2026-07-22T03:13:11.705Z"
+    },
+    {
+      "categoria": "mantenimiento",
+      "monto": 160000,
+      "fecha": "2026-07-27",
+      "descripcion": "Ahorro 1",
+      "usuario": "Henry",
+      "timestamp": "2026-07-27T18:12:00.257Z"
+    },
+    {
+      "categoria": "mantenimiento",
+      "monto": 46000,
+      "fecha": "2026-08-01",
+      "descripcion": "Purina Dayky",
+      "usuario": "Henry",
+      "timestamp": "2026-08-02T10:35:46.241Z"
+    }
+  ],
+  "notas": [],
+  "vehiculo": {
+    "mantenimientos": [],
+    "alertas": []
+  },
+  "config": {
+    "renta_semanal": 420000,
+    "dia_entrega": "sabado",
+    "moneda": "COP"
+  }
+}

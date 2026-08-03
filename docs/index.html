@@ -225,7 +225,20 @@ function rBackup(){document.getElementById('page-backup').innerHTML=`<h2 class="
 <div class="backup-btn" onclick="document.getElementById('restore-input').click()"><div class="icon">⬆️</div><div><div class="text">Restaurar backup</div><div class="desc">Carga un archivo JSON previamente descargado</div></div></div>
 <div class="card mt-2" style="background:#fffbeb;border-color:#fde68a"><p class="text-xs" style="color:#92400e">⚠️ Restaurar reemplaza TODOS los datos actuales con los del archivo.</p></div>`}
 function downloadBackup(){const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='auto-backup-'+today()+'.json';a.click();URL.revokeObjectURL(url)}
-async function restoreDB(e){const file=e.target.files[0];if(!file)return;if(!confirm('¿Restaurar? Esto reemplaza TODOS los datos actuales.'))return;const text=await file.text();try{const parsed=JSON.parse(text);if(!parsed.users||!Array.isArray(parsed.users))throw new Error('Formato invalido');db=parsed;if(!db.petty_cash)db.petty_cash=[];if(!db.savings)db.savings=[];if(!db.savings_goal)db.savings_goal={target:0,title:'Meta de ahorro'};await saveDB();alert('Datos restaurados correctamente.');rBackup()}catch(err){alert('Error: archivo invalido. '+err.message)}e.target.value=''}
+async function restoreDB(e){const file=e.target.files[0];if(!file)return;if(!confirm('¿Restaurar? Esto reemplaza TODOS los datos actuales.'))return;const text=await file.text();try{const parsed=JSON.parse(text);
+// Detect old format (has "entregas" instead of "deliveries")
+if(parsed.version&&parsed.entregas){
+  // Convert old format to new
+  db.km=( parsed.km||[]).map((r,i)=>({id:'k'+i,date:r.fecha,km_start:r.km_inicio,km_end:r.km_fin,notes:r.notas,user:r.usuario}));
+  db.deliveries=(parsed.entregas||[]).map((r,i)=>({id:'d'+i,week_start:r.semana_inicio,week_end:r.semana_fin,km_total:r.km_total,amount_paid:r.monto_pagado,notes:r.notas,user:r.usuario}));
+  db.expenses=(parsed.gastos||[]).map((r,i)=>({id:'e'+i,category:r.categoria,amount:r.monto,date:r.fecha,description:r.descripcion}));
+  db.notes=(parsed.notas||[]).map((r,i)=>({id:'n'+i,author:r.usuario||'',content:r.contenido||r.texto||'',created_at:r.timestamp||''}));
+  if(!db.petty_cash)db.petty_cash=[];if(!db.savings)db.savings=[];if(!db.savings_goal)db.savings_goal={target:0,title:'Meta de ahorro'};
+} else if(parsed.users){
+  // New format
+  db=parsed;if(!db.petty_cash)db.petty_cash=[];if(!db.savings)db.savings=[];if(!db.savings_goal)db.savings_goal={target:0,title:'Meta de ahorro'};
+} else {throw new Error('Formato no reconocido')}
+await saveDB();alert('Datos restaurados correctamente.');rBackup()}catch(err){alert('Error: archivo invalido. '+err.message)}e.target.value=''}
 
 // NOTAS
 function rNotas(){const recs=[...db.notes].sort((a,b)=>(b.created_at||'').localeCompare(a.created_at||''));document.getElementById('page-notas').innerHTML=`<h2 class="section-title">Notas</h2><div class="card"><form onsubmit="addNota(event)"><textarea id="nota-c" rows="3" placeholder="Escribe una nota..." style="resize:vertical" required></textarea><button class="btn" type="submit">Enviar nota</button></form></div><div class="card">${recs.length===0?'<p class="text-xs">Sin notas</p>':recs.map(n=>`<div class="list-item"><div class="flex-between"><strong class="text-sm text-primary">${n.author}</strong><span class="text-xs">${(n.created_at||'').split('T')[0]}</span></div><p class="text-sm mt-2">${n.content}</p></div>`).join('')}</div>`}
