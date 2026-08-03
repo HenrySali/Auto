@@ -3,64 +3,78 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#6C3FE0">
 <title>Auto Manager</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f5;color:#333;min-height:100vh}
 .hidden{display:none!important}
-header{background:#6C3FE0;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
-header h1{font-size:1.1rem}
-header .user-info{font-size:.75rem;opacity:.8}
-header button{background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:.8rem}
-.container{max-width:480px;margin:0 auto;padding:16px;padding-bottom:80px}
-.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);border:1px solid #eee}
-.btn{background:#6C3FE0;color:#fff;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:.9rem;width:100%}
+header{background:#6C3FE0;color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(108,63,224,.3)}
+header h1{font-size:1.1rem;font-weight:700}
+header .user-info{font-size:.72rem;opacity:.85;margin-top:2px}
+header button{background:rgba(255,255,255,.15);border:none;color:#fff;padding:7px 14px;border-radius:8px;cursor:pointer;font-size:.8rem;transition:background .2s}
+header button:hover{background:rgba(255,255,255,.3)}
+.container{max-width:500px;margin:0 auto;padding:16px 14px;padding-bottom:85px}
+.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,.06);border:1px solid #f0f0f0}
+.btn{background:#6C3FE0;color:#fff;border:none;padding:11px 18px;border-radius:10px;cursor:pointer;font-size:.9rem;width:100%;font-weight:600;transition:background .2s}
+.btn:hover{background:#5530B0}
 .btn:disabled{opacity:.5}
-.btn-sm{padding:6px 12px;font-size:.75rem;width:auto}
-input,select,textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:.9rem;margin-bottom:8px}
-input:focus,select:focus,textarea:focus{outline:none;border-color:#6C3FE0;box-shadow:0 0 0 2px rgba(108,63,224,.15)}
-label{display:block;font-size:.8rem;font-weight:500;color:#555;margin-bottom:4px}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.tabs{display:flex;gap:4px;background:#eee;padding:4px;border-radius:8px;margin-bottom:12px}
-.tab{flex:1;text-align:center;padding:8px;border-radius:6px;font-size:.85rem;cursor:pointer;font-weight:500;color:#666}
-.tab.active{background:#fff;color:#6C3FE0;box-shadow:0 1px 2px rgba(0,0,0,.1)}
-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #eee;display:flex;justify-content:space-around;padding:8px 4px;z-index:100}
-nav a{display:flex;flex-direction:column;align-items:center;font-size:.65rem;color:#999;text-decoration:none;padding:4px 8px;border-radius:8px}
-nav a.active{color:#6C3FE0;font-weight:600}
-nav a span.icon{font-size:1.2rem;margin-bottom:2px}
+input,select,textarea{width:100%;padding:11px 12px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:.9rem;margin-bottom:8px;transition:border .2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#6C3FE0;box-shadow:0 0 0 3px rgba(108,63,224,.1)}
+label{display:block;font-size:.78rem;font-weight:600;color:#555;margin-bottom:4px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tabs{display:flex;gap:4px;background:#ececec;padding:4px;border-radius:10px;margin-bottom:14px}
+.tab{flex:1;text-align:center;padding:9px;border-radius:8px;font-size:.85rem;cursor:pointer;font-weight:600;color:#777;transition:all .2s}
+.tab.active{background:#fff;color:#6C3FE0;box-shadow:0 2px 4px rgba(0,0,0,.08)}
+</style>
+</head>
+<body>
+<style>
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #eee;display:flex;justify-content:space-around;padding:6px 2px 8px;z-index:100;box-shadow:0 -2px 8px rgba(0,0,0,.04)}
+nav a{display:flex;flex-direction:column;align-items:center;font-size:.6rem;color:#aaa;text-decoration:none;padding:4px 6px;border-radius:8px;transition:color .2s}
+nav a.active{color:#6C3FE0;font-weight:700}
+nav a .icon{font-size:1.15rem;margin-bottom:1px}
 .stat{text-align:center}
-.stat .value{font-size:1.3rem;font-weight:700}
-.stat .label-text{font-size:.7rem;color:#888}
+.stat .value{font-size:1.4rem;font-weight:800}
+.stat .label-text{font-size:.7rem;color:#999;margin-top:2px}
 .text-success{color:#10B981}
 .text-danger{color:#EF4444}
 .text-warning{color:#F59E0B}
 .text-primary{color:#6C3FE0}
-.text-sm{font-size:.8rem}
-.text-xs{font-size:.7rem;color:#999}
+.text-sm{font-size:.82rem}
+.text-xs{font-size:.72rem;color:#999}
 .mb-2{margin-bottom:8px}
-.mb-3{margin-bottom:12px}
+.mb-3{margin-bottom:14px}
 .mt-2{margin-top:8px}
 .flex-between{display:flex;justify-content:space-between;align-items:center}
-.list-item{padding:10px 0;border-bottom:1px solid #f0f0f0}
+.list-item{padding:11px 0;border-bottom:1px solid #f5f5f5}
 .list-item:last-child{border-bottom:none}
-.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:.7rem;font-weight:600}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:.7rem;font-weight:700}
 .badge-green{background:#d1fae5;color:#065f46}
 .badge-yellow{background:#fef3c7;color:#92400e}
 .badge-red{background:#fee2e2;color:#991b1b}
-.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(to bottom,rgba(108,63,224,.08),#fff)}
-.login-box{width:100%;max-width:360px}
-.login-box h1{text-align:center;color:#6C3FE0;font-size:1.8rem;margin-bottom:4px}
-.login-box p{text-align:center;color:#888;margin-bottom:24px;font-size:.9rem}
-.error-msg{background:#fee2e2;color:#991b1b;padding:8px;border-radius:8px;font-size:.8rem;text-align:center;margin-bottom:8px}
-#token-screen{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:20px;z-index:200}
-#token-screen .card{max-width:360px;width:100%}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,rgba(108,63,224,.06) 0%,#fff 100%)}
+.login-box{width:100%;max-width:380px}
+.login-box h1{text-align:center;color:#6C3FE0;font-size:2rem;margin-bottom:6px}
+.login-box .subtitle{text-align:center;color:#999;margin-bottom:28px;font-size:.9rem}
+.error-msg{background:#fee2e2;color:#991b1b;padding:10px;border-radius:10px;font-size:.82rem;text-align:center;margin-bottom:10px}
+#token-screen{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px;z-index:200}
+#token-screen .card{max-width:380px;width:100%}
+.progress-bar{background:#ececec;border-radius:6px;height:10px;overflow:hidden;margin:8px 0}
+.progress-bar .fill{height:100%;border-radius:6px;transition:width .3s}
+.section-title{font-size:1.15rem;font-weight:700;margin-bottom:14px}
+.backup-btn{display:flex;align-items:center;gap:12px;padding:14px;background:#f8f8f8;border:1.5px solid #e8e8e8;border-radius:12px;cursor:pointer;transition:all .2s;margin-bottom:10px}
+.backup-btn:hover{border-color:#6C3FE0;background:#faf8ff}
+.backup-btn .icon{font-size:1.6rem}
+.backup-btn .text{font-size:.85rem;font-weight:600;color:#333}
+.backup-btn .desc{font-size:.72rem;color:#999;margin-top:2px}
 </style>
-</head>
-<body>
+
+<!-- LOGIN -->
 <div id="login-screen" class="login-wrap">
 <div class="login-box">
 <h1>🚗 Auto Manager</h1>
-<p>Gestion del auto de Mauro</p>
+<p class="subtitle">Gestion del auto de Mauro</p>
 <div class="card">
 <div id="login-error" class="error-msg hidden"></div>
 <form onsubmit="handleLogin(event);return false">
@@ -71,7 +85,7 @@ nav a span.icon{font-size:1.2rem;margin-bottom:2px}
 <button class="btn" type="submit">Entrar</button>
 </form>
 <p class="text-xs mt-2" style="text-align:center;cursor:pointer" onclick="document.getElementById('register-form').classList.toggle('hidden')">Crear nuevo usuario</p>
-<div id="register-form" class="hidden" style="margin-top:12px;border-top:1px solid #eee;padding-top:12px">
+<div id="register-form" class="hidden" style="margin-top:14px;border-top:1px solid #eee;padding-top:14px">
 <label>Nombre</label><input id="reg-nombre" type="text" placeholder="Nombre">
 <label>Clave</label><input id="reg-clave" type="password" placeholder="Clave">
 <label>Rol</label><select id="reg-rol"><option value="admin">Admin / Dueño</option><option value="conductor">Conductor</option></select>
@@ -80,19 +94,23 @@ nav a span.icon{font-size:1.2rem;margin-bottom:2px}
 </div>
 </div>
 </div>
+
+<!-- TOKEN -->
 <div id="token-screen" class="hidden">
 <div class="card">
-<h3 style="margin-bottom:8px">Configurar acceso</h3>
-<p class="text-xs mb-2">Solo se hace una vez. Pega tu token de GitHub para guardar datos.</p>
+<h3 style="margin-bottom:10px;font-size:1.1rem">🔑 Configurar acceso</h3>
+<p class="text-xs mb-3">Solo se hace una vez. Pega tu token de GitHub para guardar datos.</p>
 <div id="token-error" class="error-msg hidden"></div>
-<input id="setup-token" type="text" placeholder="github_pat_... o ghp_...">
+<input id="setup-token" type="text" placeholder="ghp_... o github_pat_...">
 <button class="btn" onclick="saveToken()">Guardar y continuar</button>
 </div>
 </div>
+
+<!-- APP -->
 <div id="app-screen" class="hidden">
 <header>
 <div><h1>Auto Manager</h1><p class="user-info" id="header-user">-</p></div>
-<div style="display:flex;gap:8px"><button onclick="backup()" title="Backup">💾</button><button onclick="logout()">Salir</button></div>
+<button onclick="logout()">Salir</button>
 </header>
 <div class="container">
 <div id="page-inicio"></div>
@@ -100,31 +118,55 @@ nav a span.icon{font-size:1.2rem;margin-bottom:2px}
 <div id="page-entregas" class="hidden"></div>
 <div id="page-gastos" class="hidden"></div>
 <div id="page-caja" class="hidden"></div>
-<div id="page-notas" class="hidden"></div>
 <div id="page-ahorro" class="hidden"></div>
+<div id="page-backup" class="hidden"></div>
+<div id="page-notas" class="hidden"></div>
 </div>
 <nav id="main-nav"></nav>
 </div>
+<input type="file" id="restore-input" accept=".json" style="display:none" onchange="restoreDB(event)">
 <script>
 const REPO='HenrySali',REPO_NAME='Auto',DATA_PATH='data/db.json',RENTA=420000;
-let ghToken=localStorage.getItem('gh_token')||'',currentUser=JSON.parse(localStorage.getItem('current_user')||'null'),db={users:[],km:[],deliveries:[],expenses:[],petty_cash:[],notes:[],savings:[],savings_goal:{target:0,title:'Meta de ahorro'}},currentPage='inicio',dashPeriod='week',dbSha=null;
+let ghToken=localStorage.getItem('gh_token')||'',currentUser=JSON.parse(localStorage.getItem('current_user')||'null');
+let db={users:[],km:[],deliveries:[],expenses:[],petty_cash:[],notes:[],savings:[],savings_goal:{target:0,title:'Meta de ahorro'}};
+let currentPage='inicio',dashPeriod='week',dbSha=null;
 
+// GitHub API
 const GH={
-  async get(path){const r=await fetch(`https://api.github.com/repos/${REPO}/${REPO_NAME}/contents/${path}`,{headers:{Authorization:`token ${ghToken}`,Accept:'application/vnd.github.v3+json'}});if(r.status===404)return null;if(!r.ok)throw new Error('GitHub GET error');return r.json()},
-  async put(path,content,sha){const body={message:'update',content:btoa(unescape(encodeURIComponent(content))),branch:'main'};if(sha)body.sha=sha;const r=await fetch(`https://api.github.com/repos/${REPO}/${REPO_NAME}/contents/${path}`,{method:'PUT',headers:{Authorization:`token ${ghToken}`,'Content-Type':'application/json'},body:JSON.stringify(body)});if(!r.ok){const e=await r.json();throw new Error(e.message||'GitHub PUT error')}return r.json()}
+  async get(path){
+    const r=await fetch(`https://api.github.com/repos/${REPO}/${REPO_NAME}/contents/${path}`,{headers:{Authorization:`token ${ghToken}`,Accept:'application/vnd.github.v3+json'}});
+    if(r.status===404)return null;if(!r.ok)throw new Error('GitHub GET error '+r.status);return r.json();
+  },
+  async put(path,content,sha){
+    const body={message:'update',content:btoa(unescape(encodeURIComponent(content))),branch:'main'};
+    if(sha)body.sha=sha;
+    const r=await fetch(`https://api.github.com/repos/${REPO}/${REPO_NAME}/contents/${path}`,{method:'PUT',headers:{Authorization:`token ${ghToken}`,'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!r.ok){const e=await r.json();throw new Error(e.message||'GitHub PUT error')}return r.json();
+  }
 };
 
-async function loadDB(){try{const f=await GH.get(DATA_PATH);if(f){dbSha=f.sha;db=JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g,'')))));if(!db.petty_cash)db.petty_cash=[];if(!db.savings)db.savings=[];if(!db.savings_goal)db.savings_goal={target:0,title:'Meta de ahorro'}}}catch(e){console.error('loadDB',e)}}
-async function saveDB(){try{const c=JSON.stringify(db,null,2);const r=await GH.put(DATA_PATH,c,dbSha);dbSha=r.content.sha}catch(e){console.error('saveDB',e);alert('Error guardando. Reintenta.')}}
+// DB
+async function loadDB(){
+  try{const f=await GH.get(DATA_PATH);if(f){dbSha=f.sha;db=JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g,'')))));if(!db.petty_cash)db.petty_cash=[];if(!db.savings)db.savings=[];if(!db.savings_goal)db.savings_goal={target:0,title:'Meta de ahorro'}}}catch(e){console.error('loadDB',e)}
+}
+async function saveDB(){
+  try{const c=JSON.stringify(db,null,2);const r=await GH.put(DATA_PATH,c,dbSha);dbSha=r.content.sha}catch(e){console.error('saveDB',e);alert('Error guardando. Verifica tu token.')}
+}
 
+// Auth
 async function handleLogin(e){e.preventDefault();const n=document.getElementById('login-nombre').value.trim(),cl=document.getElementById('login-clave').value,err=document.getElementById('login-error');err.classList.add('hidden');await loadDB();const u=db.users.find(x=>x.name.toLowerCase()===n.toLowerCase());if(!u||u.password!==cl){err.textContent='Nombre o clave incorrectos';err.classList.remove('hidden');return}currentUser=u;localStorage.setItem('current_user',JSON.stringify(u));showApp()}
 async function handleRegister(){const n=document.getElementById('reg-nombre').value.trim(),cl=document.getElementById('reg-clave').value,rol=document.getElementById('reg-rol').value;if(!n||!cl)return alert('Completa los campos');await loadDB();if(db.users.find(x=>x.name.toLowerCase()===n.toLowerCase()))return alert('Ya existe');db.users.push({id:Date.now(),name:n,password:cl,role:rol});await saveDB();alert('Usuario creado. Inicia sesion.')}
 function logout(){currentUser=null;localStorage.removeItem('current_user');document.getElementById('app-screen').classList.add('hidden');document.getElementById('login-screen').classList.remove('hidden')}
-function saveToken(){const t=document.getElementById('setup-token').value.trim();if(!t.startsWith('github_pat_')&&!t.startsWith('ghp_')){document.getElementById('token-error').textContent='Token invalido';document.getElementById('token-error').classList.remove('hidden');return}ghToken=t;localStorage.setItem('gh_token',t);document.getElementById('token-screen').classList.add('hidden');init()}
+function saveToken(){const t=document.getElementById('setup-token').value.trim();if(!t.startsWith('github_pat_')&&!t.startsWith('ghp_')){document.getElementById('token-error').textContent='Token debe empezar con ghp_ o github_pat_';document.getElementById('token-error').classList.remove('hidden');return}ghToken=t;localStorage.setItem('gh_token',t);document.getElementById('token-screen').classList.add('hidden');init()}
 
-function buildNav(){document.getElementById('main-nav').innerHTML=[{id:'inicio',i:'📊',l:'Inicio'},{id:'km',i:'🛣️',l:'Km'},{id:'entregas',i:'💰',l:'Entregas'},{id:'gastos',i:'💸',l:'Gastos'},{id:'caja',i:'📦',l:'Caja'},{id:'ahorro',i:'🐷',l:'Ahorro'},{id:'notas',i:'📝',l:'Notas'}].map(x=>`<a href="#" onclick="nav('${x.id}')" id="nav-${x.id}" class="${x.id===currentPage?'active':''}"><span class="icon">${x.i}</span>${x.l}</a>`).join('')}
+// Nav
+function buildNav(){
+  const items=[{id:'inicio',i:'📊',l:'Inicio'},{id:'km',i:'🛣️',l:'Km'},{id:'entregas',i:'💰',l:'Entregas'},{id:'gastos',i:'💸',l:'Gastos'},{id:'caja',i:'📦',l:'Caja'},{id:'ahorro',i:'🐷',l:'Ahorro'},{id:'backup',i:'💾',l:'Backup'},{id:'notas',i:'📝',l:'Notas'}];
+  document.getElementById('main-nav').innerHTML=items.map(x=>`<a href="#" onclick="nav('${x.id}')" id="nav-${x.id}" class="${x.id===currentPage?'active':''}"><span class="icon">${x.i}</span>${x.l}</a>`).join('');
+}
 function nav(p){document.querySelectorAll('[id^="page-"]').forEach(el=>el.classList.add('hidden'));document.getElementById('page-'+p).classList.remove('hidden');document.querySelectorAll('#main-nav a').forEach(a=>a.classList.remove('active'));const el=document.getElementById('nav-'+p);if(el)el.classList.add('active');currentPage=p;render(p)}
 
+// Helpers
 function fmt(n){return new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(n)}
 function today(){return new Date().toISOString().split('T')[0]}
 function weekRange(){const now=new Date(),day=now.getDay(),diff=day===0?6:day-1,s=new Date(now);s.setDate(now.getDate()-diff);const e=new Date(s);e.setDate(s.getDate()+6);return{from:s.toISOString().split('T')[0],to:e.toISOString().split('T')[0]}}
@@ -132,51 +174,66 @@ function monthRange(){const now=new Date(),s=new Date(now.getFullYear(),now.getM
 function inR(d,f,t){return d>=f&&d<=t}
 function uid(){return Date.now()+''+Math.random().toString(36).substr(2,5)}
 
-function render(p){switch(p){case'inicio':rDash();break;case'km':rKm();break;case'entregas':rEnt();break;case'gastos':rGas();break;case'caja':rCaja();break;case'ahorro':rAhorro();break;case'notas':rNotas();break}}
+function render(p){switch(p){case'inicio':rDash();break;case'km':rKm();break;case'entregas':rEnt();break;case'gastos':rGas();break;case'caja':rCaja();break;case'ahorro':rAhorro();break;case'backup':rBackup();break;case'notas':rNotas();break}}
 
+// DASHBOARD
 function rDash(){let f=null,t=null;if(dashPeriod==='week'){const r=weekRange();f=r.from;t=r.to}else if(dashPeriod==='month'){const r=monthRange();f=r.from;t=r.to}
 const inc=db.deliveries.filter(d=>!f||inR(d.week_start,f,t)).reduce((s,d)=>s+(d.amount_paid||0),0);
 const pc=db.petty_cash.filter(p=>!f||inR(p.week_start,f,t)).reduce((s,p)=>s+p.amount,0);
 const exp=db.expenses.filter(e=>!f||inR(e.date,f,t)).reduce((s,e)=>s+e.amount,0);
 const gc=Math.min(exp,pc),gi=exp-gc,neto=inc-pc-gi;
-document.getElementById('page-inicio').innerHTML=`<h2 style="font-size:1.2rem;font-weight:700;margin-bottom:12px">Hola, ${currentUser.name}</h2>
+const savBal=db.savings.reduce((s,r)=>s+(r.type==='deposito'?r.amount:-r.amount),0);
+document.getElementById('page-inicio').innerHTML=`<h2 class="section-title">Hola, ${currentUser.name}</h2>
 <div class="tabs"><div class="tab ${dashPeriod==='week'?'active':''}" onclick="dashPeriod='week';rDash()">Semana</div><div class="tab ${dashPeriod==='month'?'active':''}" onclick="dashPeriod='month';rDash()">Mes</div><div class="tab ${dashPeriod==='all'?'active':''}" onclick="dashPeriod='all';rDash()">Todo</div></div>
-${f?`<p class="text-xs" style="text-align:center;margin-bottom:8px">${f} → ${t}</p>`:''}
+${f?`<p class="text-xs" style="text-align:center;margin-bottom:10px">${f} → ${t}</p>`:''}
 <div class="grid-2"><div class="card stat"><p class="value text-success">${fmt(inc)}</p><p class="label-text">Ingreso</p></div><div class="card stat"><p class="value text-warning">${fmt(pc)}</p><p class="label-text">Caja menor</p></div><div class="card stat"><p class="value text-danger">${fmt(exp)}</p><p class="label-text">Gastos</p></div><div class="card stat"><p class="value ${neto>=0?'text-success':'text-danger'}">${fmt(neto)}</p><p class="label-text">Neto</p></div></div>
-<div class="card"><h3 class="text-sm mb-2" style="font-weight:600;color:#555">Desglose</h3><div class="flex-between text-sm"><span>Gastos cubiertos por caja</span><span>${fmt(gc)}</span></div><div class="flex-between text-sm mt-2"><span>Gastos del ingreso</span><span class="text-danger">${fmt(gi)}</span></div><div class="flex-between text-sm mt-2"><span>Caja sobrante</span><span class="text-success">${fmt(pc-gc)}</span></div></div>`}
+<div class="card"><h3 class="text-sm mb-2" style="font-weight:700;color:#555">Desglose</h3><div class="flex-between text-sm"><span>Gastos cubiertos por caja</span><span>${fmt(gc)}</span></div><div class="flex-between text-sm mt-2"><span>Gastos del ingreso</span><span class="text-danger">${fmt(gi)}</span></div><div class="flex-between text-sm mt-2"><span>Caja sobrante</span><span class="text-success">${fmt(pc-gc)}</span></div></div>
+<div class="card stat" style="background:rgba(16,185,129,.04);border-color:rgba(16,185,129,.15)"><p class="value text-success">${fmt(savBal)}</p><p class="label-text">Ahorro total</p></div>`}
 
-function rKm(){const recs=[...db.km].sort((a,b)=>b.date.localeCompare(a.date));document.getElementById('page-km').innerHTML=`<h2 style="font-size:1.2rem;font-weight:700;margin-bottom:12px">Kilometraje</h2><div class="card"><form onsubmit="addKm(event)"><div class="grid-2"><div><label>Fecha</label><input type="date" id="km-date" value="${today()}"></div><div></div></div><div class="grid-2"><div><label>Km inicio</label><input type="number" id="km-start" required></div><div><label>Km fin</label><input type="number" id="km-end" required></div></div><button class="btn" type="submit">Registrar</button></form></div><div class="card">${recs.length===0?'<p class="text-xs">Sin registros</p>':recs.slice(0,14).map(r=>`<div class="list-item flex-between"><div><strong class="text-sm">${r.date}</strong><br><span class="text-xs">${r.km_start}→${r.km_end}</span></div><span class="text-primary" style="font-weight:700">${r.km_end-r.km_start} km</span></div>`).join('')}</div>`}
-async function addKm(e){e.preventDefault();const k={id:uid(),date:document.getElementById('km-date').value,km_start:+document.getElementById('km-start').value,km_end:+document.getElementById('km-end').value};if(k.km_end<k.km_start)return alert('Km fin > inicio');db.km.push(k);await saveDB();rKm()}
+// KM
+function rKm(){const recs=[...db.km].sort((a,b)=>b.date.localeCompare(a.date));document.getElementById('page-km').innerHTML=`<h2 class="section-title">Kilometraje</h2><div class="card"><form onsubmit="addKm(event)"><div class="grid-2"><div><label>Fecha</label><input type="date" id="km-date" value="${today()}"></div><div></div></div><div class="grid-2"><div><label>Km inicio</label><input type="number" id="km-start" required></div><div><label>Km fin</label><input type="number" id="km-end" required></div></div><button class="btn" type="submit">Registrar</button></form></div><div class="card">${recs.length===0?'<p class="text-xs">Sin registros</p>':recs.slice(0,14).map(r=>`<div class="list-item flex-between"><div><strong class="text-sm">${r.date}</strong><br><span class="text-xs">${r.km_start} → ${r.km_end}</span></div><span class="text-primary" style="font-weight:700">${r.km_end-r.km_start} km</span></div>`).join('')}</div>`}
+async function addKm(e){e.preventDefault();const k={id:uid(),date:document.getElementById('km-date').value,km_start:+document.getElementById('km-start').value,km_end:+document.getElementById('km-end').value};if(k.km_end<k.km_start)return alert('Km fin debe ser mayor');db.km.push(k);await saveDB();rKm()}
 
-function rEnt(){const recs=[...db.deliveries].sort((a,b)=>b.week_end.localeCompare(a.week_end));document.getElementById('page-entregas').innerHTML=`<h2 style="font-size:1.2rem;font-weight:700;margin-bottom:12px">Entregas</h2><div class="card" style="background:#eff6ff;border-color:#bfdbfe"><p class="text-sm" style="color:#1d4ed8">Renta: <strong>${fmt(RENTA)}</strong>/semana</p></div><div class="card"><form onsubmit="addEnt(event)"><div class="grid-2"><div><label>Desde</label><input type="date" id="ent-s" required></div><div><label>Hasta</label><input type="date" id="ent-e" required></div></div><div class="grid-2"><div><label>Km</label><input type="number" id="ent-km"></div><div><label>Pagado</label><input type="number" id="ent-p" value="420000" required></div></div><button class="btn" type="submit">Registrar</button></form></div><div class="card">${recs.length===0?'<p class="text-xs">Sin entregas</p>':recs.map(d=>{const st=d.amount_paid>=RENTA?'pagado':d.amount_paid>0?'parcial':'pendiente';return`<div class="list-item flex-between"><div><strong class="text-sm">${d.week_start} - ${d.week_end}</strong><br><span class="text-xs">${fmt(d.amount_paid)}</span></div><span class="badge badge-${st==='pagado'?'green':st==='parcial'?'yellow':'red'}">${st}</span></div>`}).join('')}</div>`}
+// ENTREGAS
+function rEnt(){const recs=[...db.deliveries].sort((a,b)=>b.week_end.localeCompare(a.week_end));document.getElementById('page-entregas').innerHTML=`<h2 class="section-title">Entregas Semanales</h2><div class="card" style="background:#eff6ff;border-color:#bfdbfe"><p class="text-sm" style="color:#1d4ed8">Renta: <strong>${fmt(RENTA)}</strong> / semana</p></div><div class="card"><form onsubmit="addEnt(event)"><div class="grid-2"><div><label>Desde</label><input type="date" id="ent-s" required></div><div><label>Hasta</label><input type="date" id="ent-e" required></div></div><div class="grid-2"><div><label>Km semana</label><input type="number" id="ent-km"></div><div><label>Pagado</label><input type="number" id="ent-p" value="420000" required></div></div><button class="btn" type="submit">Registrar entrega</button></form></div><div class="card">${recs.length===0?'<p class="text-xs">Sin entregas</p>':recs.map(d=>{const st=d.amount_paid>=RENTA?'pagado':d.amount_paid>0?'parcial':'pendiente';return`<div class="list-item flex-between"><div><strong class="text-sm">${d.week_start} — ${d.week_end}</strong><br><span class="text-xs">${fmt(d.amount_paid)} · ${d.km_total||0} km</span></div><span class="badge badge-${st==='pagado'?'green':st==='parcial'?'yellow':'red'}">${st}</span></div>`}).join('')}</div>`}
 async function addEnt(e){e.preventDefault();db.deliveries.push({id:uid(),week_start:document.getElementById('ent-s').value,week_end:document.getElementById('ent-e').value,km_total:+document.getElementById('ent-km').value||0,amount_paid:+document.getElementById('ent-p').value});await saveDB();rEnt()}
 
-function rGas(){const recs=[...db.expenses].sort((a,b)=>b.date.localeCompare(a.date));const icons={mantenimiento:'🔧',seguro:'🛡️',combustible:'⛽',lavado:'🧽',multa:'🚨',otro:'📌'};document.getElementById('page-gastos').innerHTML=`<h2 style="font-size:1.2rem;font-weight:700;margin-bottom:12px">Gastos</h2><div class="card"><form onsubmit="addGas(event)"><label>Categoria</label><select id="gas-cat"><option value="mantenimiento">🔧 Mantenimiento</option><option value="combustible">⛽ Combustible</option><option value="seguro">🛡️ Seguro</option><option value="lavado">🧽 Lavado</option><option value="multa">🚨 Multa</option><option value="otro">📌 Otro</option></select><div class="grid-2"><div><label>Monto</label><input type="number" id="gas-amt" required></div><div><label>Fecha</label><input type="date" id="gas-date" value="${today()}" required></div></div><label>Descripcion</label><input type="text" id="gas-desc"><button class="btn" type="submit">Registrar</button></form></div><div class="card">${recs.length===0?'<p class="text-xs">Sin gastos</p>':recs.map(e=>`<div class="list-item flex-between"><div><span>${icons[e.category]||'📌'}</span> <strong class="text-sm">${e.category}</strong><br><span class="text-xs">${e.date} ${e.description||''}</span></div><span class="text-danger" style="font-weight:700">${fmt(e.amount)}</span></div>`).join('')}</div>`}
+// GASTOS
+function rGas(){const recs=[...db.expenses].sort((a,b)=>b.date.localeCompare(a.date));const icons={mantenimiento:'🔧',seguro:'🛡️',combustible:'⛽',lavado:'🧽',multa:'🚨',otro:'📌'};const total=recs.reduce((s,e)=>s+e.amount,0);document.getElementById('page-gastos').innerHTML=`<h2 class="section-title">Gastos del Vehículo</h2><div class="card stat"><p class="value text-danger">${fmt(total)}</p><p class="label-text">Total gastos</p></div><div class="card"><form onsubmit="addGas(event)"><label>Categoria</label><select id="gas-cat"><option value="mantenimiento">🔧 Mantenimiento</option><option value="combustible">⛽ Combustible</option><option value="seguro">🛡️ Seguro</option><option value="lavado">🧽 Lavado</option><option value="multa">🚨 Multa</option><option value="otro">📌 Otro</option></select><div class="grid-2"><div><label>Monto</label><input type="number" id="gas-amt" required></div><div><label>Fecha</label><input type="date" id="gas-date" value="${today()}" required></div></div><label>Descripcion</label><input type="text" id="gas-desc"><button class="btn" type="submit">Registrar gasto</button></form></div><div class="card">${recs.length===0?'<p class="text-xs">Sin gastos</p>':recs.map(e=>`<div class="list-item flex-between"><div><span>${icons[e.category]||'📌'}</span> <strong class="text-sm">${e.category}</strong><br><span class="text-xs">${e.date} ${e.description||''}</span></div><span class="text-danger" style="font-weight:700">${fmt(e.amount)}</span></div>`).join('')}</div>`}
 async function addGas(e){e.preventDefault();db.expenses.push({id:uid(),category:document.getElementById('gas-cat').value,amount:+document.getElementById('gas-amt').value,date:document.getElementById('gas-date').value,description:document.getElementById('gas-desc').value});await saveDB();rGas()}
 
-function rCaja(){const recs=[...db.petty_cash].sort((a,b)=>b.week_end.localeCompare(a.week_end));const tot=recs.reduce((s,r)=>s+r.amount,0);const wr=weekRange();document.getElementById('page-caja').innerHTML=`<h2 style="font-size:1.2rem;font-weight:700;margin-bottom:12px">Caja Menor</h2><div class="card stat" style="background:#fffbeb;border-color:#fde68a"><p class="value text-warning">${fmt(tot)}</p><p class="label-text">Total caja menor</p></div><div class="card"><form onsubmit="addCaja(event)"><div class="grid-2"><div><label>Semana inicio</label><input type="date" id="cj-s" value="${wr.from}" required></div><div><label>Semana fin</label><input type="date" id="cj-e" value="${wr.to}" required></div></div><label>Monto</label><input type="number" id="cj-amt" required><label>Descripcion</label><input type="text" id="cj-desc"><button class="btn" type="submit">Registrar</button></form></div><div class="card">${recs.length===0?'<p class="text-xs">Sin registros</p>':recs.map(r=>`<div class="list-item flex-between"><div><strong class="text-sm">${r.week_start} → ${r.week_end}</strong><br><span class="text-xs">${r.description||''}</span></div><div style="display:flex;align-items:center;gap:8px"><span class="text-warning" style="font-weight:700">${fmt(r.amount)}</span><span class="text-xs text-danger" style="cursor:pointer" onclick="delCaja('${r.id}')">✕</span></div></div>`).join('')}</div>`}
+// CAJA MENOR
+function rCaja(){const recs=[...db.petty_cash].sort((a,b)=>b.week_end.localeCompare(a.week_end));const tot=recs.reduce((s,r)=>s+r.amount,0);const wr=weekRange();document.getElementById('page-caja').innerHTML=`<h2 class="section-title">Caja Menor</h2><div class="card stat" style="background:#fffbeb;border-color:#fde68a"><p class="value text-warning">${fmt(tot)}</p><p class="label-text">Total caja menor</p></div><div class="card"><form onsubmit="addCaja(event)"><div class="grid-2"><div><label>Semana inicio</label><input type="date" id="cj-s" value="${wr.from}" required></div><div><label>Semana fin</label><input type="date" id="cj-e" value="${wr.to}" required></div></div><label>Monto</label><input type="number" id="cj-amt" required><label>Descripcion</label><input type="text" id="cj-desc"><button class="btn" type="submit">Registrar</button></form></div><div class="card">${recs.length===0?'<p class="text-xs">Sin registros</p>':recs.map(r=>`<div class="list-item flex-between"><div><strong class="text-sm">${r.week_start} → ${r.week_end}</strong><br><span class="text-xs">${r.description||''}</span></div><div style="display:flex;align-items:center;gap:8px"><span class="text-warning" style="font-weight:700">${fmt(r.amount)}</span><span class="text-xs text-danger" style="cursor:pointer" onclick="delCaja('${r.id}')">✕</span></div></div>`).join('')}</div>`}
 async function addCaja(e){e.preventDefault();db.petty_cash.push({id:uid(),week_start:document.getElementById('cj-s').value,week_end:document.getElementById('cj-e').value,amount:+document.getElementById('cj-amt').value,description:document.getElementById('cj-desc').value});await saveDB();rCaja()}
 async function delCaja(id){if(!confirm('Eliminar?'))return;db.petty_cash=db.petty_cash.filter(c=>c.id!==id);await saveDB();rCaja()}
 
-function rNotas(){const recs=[...db.notes].sort((a,b)=>(b.created_at||'').localeCompare(a.created_at||''));document.getElementById('page-notas').innerHTML=`<h2 style="font-size:1.2rem;font-weight:700;margin-bottom:12px">Notas</h2><div class="card"><form onsubmit="addNota(event)"><textarea id="nota-c" rows="3" placeholder="Escribe una nota..." required></textarea><button class="btn" type="submit">Enviar</button></form></div><div class="card">${recs.length===0?'<p class="text-xs">Sin notas</p>':recs.map(n=>`<div class="list-item"><div class="flex-between"><strong class="text-sm text-primary">${n.author}</strong><span class="text-xs">${(n.created_at||'').split('T')[0]}</span></div><p class="text-sm mt-2">${n.content}</p></div>`).join('')}</div>`}
-async function addNota(e){e.preventDefault();db.notes.push({id:uid(),author:currentUser.name,content:document.getElementById('nota-c').value,created_at:new Date().toISOString()});await saveDB();rNotas()}
-
-function backup(){const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='auto-backup-'+today()+'.json';a.click();URL.revokeObjectURL(url)}
-
+// AHORRO
 function rAhorro(){const recs=[...db.savings].sort((a,b)=>b.date.localeCompare(a.date));const dep=recs.filter(r=>r.type==='deposito').reduce((s,r)=>s+r.amount,0);const ret=recs.filter(r=>r.type==='retiro').reduce((s,r)=>s+r.amount,0);const saldo=dep-ret;const goal=db.savings_goal;const prog=goal.target>0?Math.min(100,Math.round((saldo/goal.target)*100)):0;
-document.getElementById('page-ahorro').innerHTML=`<h2 style="font-size:1.2rem;font-weight:700;margin-bottom:12px">Ahorro</h2>
-<div class="card stat" style="background:rgba(16,185,129,.05);border-color:rgba(16,185,129,.2)"><p class="value text-success">${fmt(saldo)}</p><p class="label-text">Saldo ahorrado</p><div style="display:flex;justify-content:space-around;margin-top:8px" class="text-xs"><span>⬆️ ${fmt(dep)}</span><span>⬇️ ${fmt(ret)}</span></div></div>
-${goal.target>0?`<div class="card"><h3 class="text-sm mb-2" style="font-weight:600">🎯 ${goal.title}</h3><div style="background:#eee;border-radius:6px;height:10px;overflow:hidden"><div style="background:${prog>=100?'#10B981':'#6C3FE0'};height:100%;width:${prog}%;border-radius:6px"></div></div><div class="flex-between text-xs mt-2"><span class="text-primary" style="font-weight:700">${prog}%</span><span>Meta: ${fmt(goal.target)}</span></div>${prog>=100?'<p class="text-xs text-success mt-2" style="font-weight:600">¡Meta alcanzada! 🎉</p>':`<p class="text-xs mt-2">Faltan ${fmt(goal.target-saldo)}</p>`}</div>`:''}
-<div class="card"><h3 class="text-sm mb-2" style="font-weight:600">Definir meta</h3><div class="grid-2"><input type="text" id="ah-title" placeholder="Nombre meta" value="${goal.title}"><input type="number" id="ah-target" placeholder="Monto" value="${goal.target||''}"></div><button class="btn" onclick="setGoal()">Guardar meta</button></div>
-<div class="card"><h3 class="text-sm mb-2" style="font-weight:600">Nuevo movimiento</h3><form onsubmit="addAhorro(event)"><select id="ah-type"><option value="deposito">⬆️ Deposito</option><option value="retiro">⬇️ Retiro</option></select><div class="grid-2"><div><label>Monto</label><input type="number" id="ah-amt" required></div><div><label>Fecha</label><input type="date" id="ah-date" value="${today()}" required></div></div><label>Descripcion</label><input type="text" id="ah-desc"><button class="btn" type="submit">Registrar</button></form></div>
-<div class="card">${recs.length===0?'<p class="text-xs">Sin movimientos</p>':recs.map(r=>`<div class="list-item flex-between"><div><span>${r.type==='deposito'?'⬆️':'⬇️'}</span> <strong class="text-sm">${r.type}</strong><br><span class="text-xs">${r.date} ${r.description||''}</span></div><span style="font-weight:700" class="${r.type==='deposito'?'text-success':'text-danger'}">${r.type==='deposito'?'+':'-'}${fmt(r.amount)}</span></div>`).join('')}</div>`}
+document.getElementById('page-ahorro').innerHTML=`<h2 class="section-title">Ahorro</h2>
+<div class="card stat" style="background:rgba(16,185,129,.04);border-color:rgba(16,185,129,.15)"><p class="value text-success">${fmt(saldo)}</p><p class="label-text">Saldo ahorrado</p><div style="display:flex;justify-content:space-around;margin-top:10px" class="text-xs"><span>⬆️ Depositado: <strong>${fmt(dep)}</strong></span><span>⬇️ Retirado: <strong>${fmt(ret)}</strong></span></div></div>
+${goal.target>0?`<div class="card"><h3 class="text-sm mb-2" style="font-weight:700">🎯 ${goal.title}</h3><div class="progress-bar"><div class="fill" style="background:${prog>=100?'#10B981':'#6C3FE0'};width:${prog}%"></div></div><div class="flex-between text-xs"><span class="text-primary" style="font-weight:800">${prog}%</span><span>Meta: ${fmt(goal.target)}</span></div>${prog>=100?'<p class="text-xs text-success mt-2" style="font-weight:700">¡Meta alcanzada! 🎉</p>':`<p class="text-xs mt-2">Faltan ${fmt(goal.target-saldo)}</p>`}</div>`:''}
+<div class="card"><h3 class="text-sm mb-2" style="font-weight:700">Definir meta</h3><div class="grid-2"><div><label>Nombre</label><input type="text" id="ah-title" value="${goal.title}"></div><div><label>Monto objetivo</label><input type="number" id="ah-target" value="${goal.target||''}"></div></div><button class="btn" onclick="setGoal()">Guardar meta</button></div>
+<div class="card"><h3 class="text-sm mb-2" style="font-weight:700">Nuevo movimiento</h3><form onsubmit="addAhorro(event)"><select id="ah-type"><option value="deposito">⬆️ Deposito</option><option value="retiro">⬇️ Retiro</option></select><div class="grid-2"><div><label>Monto</label><input type="number" id="ah-amt" required></div><div><label>Fecha</label><input type="date" id="ah-date" value="${today()}" required></div></div><label>Descripcion</label><input type="text" id="ah-desc"><button class="btn" type="submit">Registrar</button></form></div>
+<div class="card">${recs.length===0?'<p class="text-xs">Sin movimientos</p>':recs.map(r=>`<div class="list-item flex-between"><div><span>${r.type==='deposito'?'⬆️':'⬇️'}</span> <strong class="text-sm">${r.type==='deposito'?'Deposito':'Retiro'}</strong><br><span class="text-xs">${r.date} ${r.description||''}</span></div><span style="font-weight:700" class="${r.type==='deposito'?'text-success':'text-danger'}">${r.type==='deposito'?'+':'-'}${fmt(r.amount)}</span></div>`).join('')}</div>`}
 async function addAhorro(e){e.preventDefault();db.savings.push({id:uid(),type:document.getElementById('ah-type').value,amount:+document.getElementById('ah-amt').value,date:document.getElementById('ah-date').value,description:document.getElementById('ah-desc').value});await saveDB();rAhorro()}
 async function setGoal(){db.savings_goal={target:+document.getElementById('ah-target').value||0,title:document.getElementById('ah-title').value||'Meta de ahorro'};await saveDB();rAhorro()}
 
+// BACKUP
+function rBackup(){document.getElementById('page-backup').innerHTML=`<h2 class="section-title">💾 Backup de Datos</h2>
+<p class="text-xs mb-3">Descarga o restaura todos los datos de la aplicación.</p>
+<div class="backup-btn" onclick="downloadBackup()"><div class="icon">⬇️</div><div><div class="text">Descargar backup</div><div class="desc">Guarda un archivo JSON con todos los datos actuales</div></div></div>
+<div class="backup-btn" onclick="document.getElementById('restore-input').click()"><div class="icon">⬆️</div><div><div class="text">Restaurar backup</div><div class="desc">Carga un archivo JSON previamente descargado</div></div></div>
+<div class="card mt-2" style="background:#fffbeb;border-color:#fde68a"><p class="text-xs" style="color:#92400e">⚠️ Restaurar reemplaza TODOS los datos actuales con los del archivo.</p></div>`}
+function downloadBackup(){const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='auto-backup-'+today()+'.json';a.click();URL.revokeObjectURL(url)}
+async function restoreDB(e){const file=e.target.files[0];if(!file)return;if(!confirm('¿Restaurar? Esto reemplaza TODOS los datos actuales.'))return;const text=await file.text();try{const parsed=JSON.parse(text);if(!parsed.users||!Array.isArray(parsed.users))throw new Error('Formato invalido');db=parsed;if(!db.petty_cash)db.petty_cash=[];if(!db.savings)db.savings=[];if(!db.savings_goal)db.savings_goal={target:0,title:'Meta de ahorro'};await saveDB();alert('Datos restaurados correctamente.');rBackup()}catch(err){alert('Error: archivo invalido. '+err.message)}e.target.value=''}
+
+// NOTAS
+function rNotas(){const recs=[...db.notes].sort((a,b)=>(b.created_at||'').localeCompare(a.created_at||''));document.getElementById('page-notas').innerHTML=`<h2 class="section-title">Notas</h2><div class="card"><form onsubmit="addNota(event)"><textarea id="nota-c" rows="3" placeholder="Escribe una nota..." style="resize:vertical" required></textarea><button class="btn" type="submit">Enviar nota</button></form></div><div class="card">${recs.length===0?'<p class="text-xs">Sin notas</p>':recs.map(n=>`<div class="list-item"><div class="flex-between"><strong class="text-sm text-primary">${n.author}</strong><span class="text-xs">${(n.created_at||'').split('T')[0]}</span></div><p class="text-sm mt-2">${n.content}</p></div>`).join('')}</div>`}
+async function addNota(e){e.preventDefault();db.notes.push({id:uid(),author:currentUser.name,content:document.getElementById('nota-c').value,created_at:new Date().toISOString()});await saveDB();rNotas()}
+
+// INIT
 function showApp(){document.getElementById('login-screen').classList.add('hidden');document.getElementById('app-screen').classList.remove('hidden');document.getElementById('header-user').textContent=`${currentUser.name} - ${currentUser.role==='admin'?'Admin':'Conductor'}`;buildNav();nav('inicio')}
-
 async function init(){if(!ghToken){document.getElementById('token-screen').classList.remove('hidden');return}await loadDB();if(currentUser){const exists=db.users.find(u=>u.id===currentUser.id);if(exists){showApp();return}currentUser=null;localStorage.removeItem('current_user')}document.getElementById('login-screen').classList.remove('hidden')}
-
 if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(r=>r.forEach(x=>x.unregister()));caches.keys().then(n=>n.forEach(x=>caches.delete(x)))}
 init();
 </script>
