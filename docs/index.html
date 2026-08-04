@@ -183,7 +183,13 @@ const pc=db.petty_cash.filter(p=>!f||inR(p.week_start,f,t)).reduce((s,p)=>s+p.am
 const exp=db.expenses.filter(e=>!f||inR(e.date,f,t)).reduce((s,e)=>s+e.amount,0);
 const gc=Math.min(exp,pc),gi=exp-gc,neto=inc-pc-gi;
 const savBal=db.savings.reduce((s,r)=>s+(r.type==='deposito'?r.amount:-r.amount),0);
+// Alerta de semana sin pagar
+const wr=weekRange();
+const semanaActualPagada=db.deliveries.some(d=>d.week_start<=wr.to&&d.week_end>=wr.from);
+const deudaTotal=calcDeuda();
+const alertHtml=(!semanaActualPagada?`<div class="card" style="background:#fef3c7;border-color:#fde68a"><p class="text-sm" style="color:#92400e">⏰ <strong>Semana actual sin entrega registrada</strong> (${wr.from} → ${wr.to})</p></div>`:'')+(deudaTotal>0?`<div class="card" style="background:#fee2e2;border-color:#fca5a5"><div class="flex-between"><p class="text-sm" style="color:#991b1b">⚠️ Deuda acumulada</p><p class="text-sm" style="color:#991b1b;font-weight:800">${fmt(deudaTotal)}</p></div></div>`:'');
 document.getElementById('page-inicio').innerHTML=`<h2 class="section-title">Hola, ${currentUser.name}</h2>
+${alertHtml}
 <div class="tabs"><div class="tab ${dashPeriod==='week'?'active':''}" onclick="dashPeriod='week';rDash()">Semana</div><div class="tab ${dashPeriod==='month'?'active':''}" onclick="dashPeriod='month';rDash()">Mes</div><div class="tab ${dashPeriod==='all'?'active':''}" onclick="dashPeriod='all';rDash()">Todo</div></div>
 ${f?`<p class="text-xs" style="text-align:center;margin-bottom:10px">${f} → ${t}</p>`:''}
 <div class="grid-2"><div class="card stat"><p class="value text-success">${fmt(inc)}</p><p class="label-text">Ingreso</p></div><div class="card stat"><p class="value text-warning">${fmt(pc)}</p><p class="label-text">Caja menor</p></div><div class="card stat"><p class="value text-danger">${fmt(exp)}</p><p class="label-text">Gastos</p></div><div class="card stat"><p class="value ${neto>=0?'text-success':'text-danger'}">${fmt(neto)}</p><p class="label-text">Neto</p></div></div>
@@ -195,8 +201,59 @@ function rKm(){const recs=[...db.km].sort((a,b)=>b.date.localeCompare(a.date));d
 async function addKm(e){e.preventDefault();const k={id:uid(),date:document.getElementById('km-date').value,km_start:+document.getElementById('km-start').value,km_end:+document.getElementById('km-end').value};if(k.km_end<k.km_start)return alert('Km fin debe ser mayor');db.km.push(k);await saveDB();rKm()}
 
 // ENTREGAS
-function rEnt(){const recs=[...db.deliveries].sort((a,b)=>b.week_end.localeCompare(a.week_end));document.getElementById('page-entregas').innerHTML=`<h2 class="section-title">Entregas Semanales</h2><div class="card" style="background:#eff6ff;border-color:#bfdbfe"><p class="text-sm" style="color:#1d4ed8">Renta: <strong>${fmt(RENTA)}</strong> / semana</p></div><div class="card"><form onsubmit="addEnt(event)"><div class="grid-2"><div><label>Desde</label><input type="date" id="ent-s" required></div><div><label>Hasta</label><input type="date" id="ent-e" required></div></div><div class="grid-2"><div><label>Km semana</label><input type="number" id="ent-km"></div><div><label>Pagado</label><input type="number" id="ent-p" value="420000" required></div></div><button class="btn" type="submit">Registrar entrega</button></form></div><div class="card">${recs.length===0?'<p class="text-xs">Sin entregas</p>':recs.map(d=>{const st=d.amount_paid>=RENTA?'pagado':d.amount_paid>0?'parcial':'pendiente';const gastos=db.expenses.filter(e=>e.date>=d.week_start&&e.date<=d.week_end);const totalGas=gastos.reduce((s,e)=>s+e.amount,0);const neto=d.amount_paid-totalGas;return`<div class="list-item"><div class="flex-between"><div><strong class="text-sm">${d.week_start} — ${d.week_end}</strong><br><span class="text-xs">${fmt(d.amount_paid)} · ${d.km_total||0} km${d.notes?' · '+d.notes:''}</span></div><div style="display:flex;align-items:center;gap:8px"><span class="badge badge-${st==='pagado'?'green':st==='parcial'?'yellow':'red'}">${st}</span><span class="text-xs text-danger" style="cursor:pointer" onclick="delEnt('${d.id}')">✕</span></div></div>${gastos.length>0?`<div style="margin-top:8px;padding:8px;background:#fafafa;border-radius:8px"><p class="text-xs" style="font-weight:700;color:#555;margin-bottom:4px">Gastos de la semana:</p>${gastos.map(g=>`<div class="flex-between text-xs"><span>${g.description||g.category}</span><span class="text-danger">${fmt(g.amount)}</span></div>`).join('')}<div class="flex-between text-sm mt-2" style="border-top:1px solid #eee;padding-top:4px"><strong>Neto</strong><strong class="${neto>=0?'text-success':'text-danger'}">${fmt(neto)}</strong></div></div>`:''}</div>`}).join('')}</div>`}
-async function addEnt(e){e.preventDefault();db.deliveries.push({id:uid(),week_start:document.getElementById('ent-s').value,week_end:document.getElementById('ent-e').value,km_total:+document.getElementById('ent-km').value||0,amount_paid:+document.getElementById('ent-p').value});await saveDB();rEnt()}
+function getAutoKm(){
+  // Calcula km delta desde la seccion Km: ultimo registro menos el penultimo
+  const sorted=[...db.km].sort((a,b)=>b.date.localeCompare(a.date));
+  if(sorted.length>=2) return sorted[0].km_end - sorted[1].km_end;
+  if(sorted.length===1) return sorted[0].km_end - sorted[0].km_start;
+  return 0;
+}
+function checkOverlap(s,e,excludeId){
+  return db.deliveries.some(d=>{
+    if(excludeId&&d.id===excludeId) return false;
+    return s<=d.week_end && e>=d.week_start;
+  });
+}
+function calcDeuda(){
+  // Calcula deuda acumulada (entregas parciales o pendientes)
+  const sorted=[...db.deliveries].sort((a,b)=>a.week_start.localeCompare(b.week_start));
+  let deuda=0;
+  sorted.forEach(d=>{deuda+=RENTA-(d.amount_paid||0)});
+  return deuda;
+}
+function rEnt(){
+  const recs=[...db.deliveries].sort((a,b)=>b.week_end.localeCompare(a.week_end));
+  const wr=weekRange();
+  const autoKm=getAutoKm();
+  const deudaTotal=calcDeuda();
+  // Total del mes actual
+  const mr=monthRange();
+  const totalMes=db.deliveries.filter(d=>inR(d.week_start,mr.from,mr.to)).reduce((s,d)=>s+(d.amount_paid||0),0);
+  const entregasMes=db.deliveries.filter(d=>inR(d.week_start,mr.from,mr.to)).length;
+  // Numero de entrega siguiente
+  const numEntrega=db.deliveries.length+1;
+
+  document.getElementById('page-entregas').innerHTML=`<h2 class="section-title">Entregas Semanales</h2>
+<div class="card" style="background:#eff6ff;border-color:#bfdbfe"><div class="flex-between"><p class="text-sm" style="color:#1d4ed8">Renta: <strong>${fmt(RENTA)}</strong> / semana</p><p class="text-sm" style="color:#1d4ed8">Entrega #${numEntrega}</p></div></div>
+${deudaTotal>0?`<div class="card" style="background:#fee2e2;border-color:#fca5a5"><div class="flex-between"><p class="text-sm" style="color:#991b1b">⚠️ Deuda acumulada</p><p class="text-sm" style="color:#991b1b;font-weight:800">${fmt(deudaTotal)}</p></div></div>`:''}
+<div class="card stat"><p class="value text-success">${fmt(totalMes)}</p><p class="label-text">Total mes actual (${entregasMes} entregas)</p></div>
+<div class="card"><form onsubmit="addEnt(event)"><div class="grid-2"><div><label>Desde</label><input type="date" id="ent-s" value="${wr.from}" required></div><div><label>Hasta</label><input type="date" id="ent-e" value="${wr.to}" required></div></div><div class="grid-2"><div><label>Km semana (auto: ${autoKm})</label><input type="number" id="ent-km" value="${autoKm}" placeholder="${autoKm}"></div><div><label>Pagado</label><input type="number" id="ent-p" value="420000" required></div></div><label>Notas (opcional)</label><input type="text" id="ent-notes" placeholder="Observaciones"><button class="btn" type="submit">Registrar entrega</button></form></div>
+<div class="card">${recs.length===0?'<p class="text-xs">Sin entregas</p>':recs.map((d,idx)=>{const entNum=recs.length-idx;const st=d.amount_paid>=RENTA?'pagado':d.amount_paid>0?'parcial':'pendiente';const diff=RENTA-(d.amount_paid||0);const gastos=db.expenses.filter(e=>e.date>=d.week_start&&e.date<=d.week_end);const totalGas=gastos.reduce((s,e)=>s+e.amount,0);const neto=d.amount_paid-totalGas;return`<div class="list-item"><div class="flex-between"><div><strong class="text-sm">#${entNum} · ${d.week_start} — ${d.week_end}</strong><br><span class="text-xs">${fmt(d.amount_paid)} · ${d.km_total||0} km${d.notes?' · '+d.notes:''}</span>${st==='parcial'?`<br><span class="text-xs text-danger">Debe: ${fmt(diff)}</span>`:''}</div><div style="display:flex;align-items:center;gap:8px"><span class="badge badge-${st==='pagado'?'green':st==='parcial'?'yellow':'red'}">${st}</span><span class="text-xs text-danger" style="cursor:pointer" onclick="delEnt('${d.id}')">✕</span></div></div>${gastos.length>0?`<div style="margin-top:8px;padding:8px;background:#fafafa;border-radius:8px"><p class="text-xs" style="font-weight:700;color:#555;margin-bottom:4px">Gastos de la semana:</p>${gastos.map(g=>`<div class="flex-between text-xs"><span>${g.description||g.category}</span><span class="text-danger">${fmt(g.amount)}</span></div>`).join('')}<div class="flex-between text-sm mt-2" style="border-top:1px solid #eee;padding-top:4px"><strong>Neto</strong><strong class="${neto>=0?'text-success':'text-danger'}">${fmt(neto)}</strong></div></div>`:''}</div>`}).join('')}</div>`}
+async function addEnt(e){
+  e.preventDefault();
+  const s=document.getElementById('ent-s').value, en=document.getElementById('ent-e').value;
+  // Validar que hasta > desde
+  if(en<=s) return alert('La fecha "Hasta" debe ser posterior a "Desde".');
+  // Validar solapamiento
+  if(checkOverlap(s,en)){
+    if(!confirm('⚠️ Ya existe una entrega en ese rango de fechas. ¿Registrar de todos modos?')) return;
+  }
+  // Confirmacion antes de guardar
+  const monto=+document.getElementById('ent-p').value;
+  if(!confirm(`¿Registrar entrega #${db.deliveries.length+1}?\n${s} → ${en}\nMonto: ${fmt(monto)}`)) return;
+  db.deliveries.push({id:uid(),week_start:s,week_end:en,km_total:+document.getElementById('ent-km').value||0,amount_paid:monto,notes:document.getElementById('ent-notes').value||null,user:currentUser.name});
+  await saveDB();rEnt();
+}
 async function delEnt(id){const code=prompt('Codigo para eliminar:');if(code!=='001')return alert('Codigo incorrecto');db.deliveries=db.deliveries.filter(x=>x.id!==id);await saveDB();rEnt()}
 
 // GASTOS
