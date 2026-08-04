@@ -161,13 +161,6 @@
   ],
   "petty_cash": [
     {
-      "id": "17858416829053rtzb",
-      "week_start": "2026-07-24",
-      "week_end": "2026-07-30",
-      "amount": 160000,
-      "description": ""
-    },
-    {
       "id": "1785852114736bepxx",
       "type": "gasto",
       "date": "2026-08-04",
