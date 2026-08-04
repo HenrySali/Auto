@@ -172,6 +172,7 @@ function isSuperAdmin(){return currentUser&&currentUser.role==='superadmin'}
 function fmt(n){return new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(n)}
 function today(){return new Date().toISOString().split('T')[0]}
 function weekRange(){const now=new Date(),day=now.getDay(),diff=day===0?6:day-1,s=new Date(now);s.setDate(now.getDate()-diff);const e=new Date(s);e.setDate(s.getDate()+6);return{from:s.toISOString().split('T')[0],to:e.toISOString().split('T')[0]}}
+function weekRangeFor(dateStr){const d=new Date(dateStr+'T12:00:00'),day=d.getDay(),diff=day===0?6:day-1,s=new Date(d);s.setDate(d.getDate()-diff);const e=new Date(s);e.setDate(s.getDate()+6);return{from:s.toISOString().split('T')[0],to:e.toISOString().split('T')[0]}}
 function monthRange(){const now=new Date(),s=new Date(now.getFullYear(),now.getMonth(),1),e=new Date(now.getFullYear(),now.getMonth()+1,0);return{from:s.toISOString().split('T')[0],to:e.toISOString().split('T')[0]}}
 function inR(d,f,t){return d>=f&&d<=t}
 function uid(){return Date.now()+''+Math.random().toString(36).substr(2,5)}
@@ -180,10 +181,9 @@ function render(p){switch(p){case'inicio':rDash();break;case'km':rKm();break;cas
 
 // GANANCIA MENSUAL
 function buildMonthlyGanancia(){
-  // Agrupar entregas por mes (YYYY-MM basado en week_start)
   const meses={};
   db.deliveries.forEach(d=>{
-    const m=d.week_start.substring(0,7); // "2026-07"
+    const m=d.week_start.substring(0,7);
     if(!meses[m]) meses[m]={ingreso:0,gastos:0,caja:0,entregas:0};
     meses[m].ingreso+=(d.amount_paid||0);
     meses[m].entregas++;
@@ -193,8 +193,9 @@ function buildMonthlyGanancia(){
     if(!meses[m]) meses[m]={ingreso:0,gastos:0,caja:0,entregas:0};
     meses[m].gastos+=e.amount;
   });
-  db.petty_cash.forEach(p=>{
-    const m=p.week_start.substring(0,7);
+  db.petty_cash.filter(p=>p.type==='ingreso').forEach(p=>{
+    const m=(p.date||p.week_start||'').substring(0,7);
+    if(!m)return;
     if(!meses[m]) meses[m]={ingreso:0,gastos:0,caja:0,entregas:0};
     meses[m].caja+=p.amount;
   });
@@ -202,15 +203,9 @@ function buildMonthlyGanancia(){
   if(sorted.length===0) return '';
   const nombres=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
   const ESPERADO=RENTA*4;
-  // Caja es pozo total global, gastos se descuentan de ahi primero
-  const cajaTotal=db.petty_cash.reduce((s,p)=>s+p.amount,0);
-  const gastosTotal=db.expenses.reduce((s,e)=>s+e.amount,0);
-  const gastoDelIngreso=Math.max(0,gastosTotal-cajaTotal);
   const rows=sorted.map(m=>{
     const d=meses[m];
-    // Proporcion de gastos del ingreso que corresponde a este mes
-    const propGasto=gastosTotal>0?(d.gastos/gastosTotal)*gastoDelIngreso:0;
-    const ganancia=d.ingreso-propGasto;
+    const ganancia=d.ingreso-d.gastos-d.caja;
     const mesNum=parseInt(m.split('-')[1])-1;
     const anio=m.split('-')[0];
     const cumple=d.ingreso>=ESPERADO;
@@ -223,14 +218,16 @@ function buildMonthlyGanancia(){
 function rDash(){let f=null,t=null;if(dashPeriod==='week'){const r=weekRange();f=r.from;t=r.to}else if(dashPeriod==='month'){const r=monthRange();f=r.from;t=r.to}
 const inc=db.deliveries.filter(d=>!f||inR(d.week_start,f,t)).reduce((s,d)=>s+(d.amount_paid||0),0);
 const exp=db.expenses.filter(e=>!f||inR(e.date,f,t)).reduce((s,e)=>s+e.amount,0);
-// Caja es un pozo total: gastos se descuentan de la caja total primero
-const cajaTotal=db.petty_cash.reduce((s,p)=>s+p.amount,0);
-const gastosTotal=db.expenses.reduce((s,e)=>s+e.amount,0);
-const cajaSobrante=Math.max(0,cajaTotal-gastosTotal);
-// Para el periodo: cuanto del gasto se cubrio con caja
-const gc=Math.min(exp,cajaSobrante>0?Math.min(exp,cajaTotal-Math.max(0,gastosTotal-exp)):cajaTotal>=gastosTotal?exp:Math.max(0,cajaTotal-(gastosTotal-exp)));
-const gi=exp-gc;
-const neto=inc-gi;
+// Caja ingresos del periodo (se resta del producido)
+const cajaIngPeriodo=db.petty_cash.filter(p=>p.type==='ingreso'&&(!f||inR(p.date,f,t))).reduce((s,p)=>s+p.amount,0);
+// Caja gastos del periodo (no afecta producido, solo baja saldo caja)
+const cajaGasPeriodo=db.petty_cash.filter(p=>p.type==='gasto'&&(!f||inR(p.date,f,t))).reduce((s,p)=>s+p.amount,0);
+// Saldo caja total
+const cajaIngTotal=db.petty_cash.filter(p=>p.type==='ingreso').reduce((s,p)=>s+p.amount,0);
+const cajaGasTotal=db.petty_cash.filter(p=>p.type==='gasto').reduce((s,p)=>s+p.amount,0);
+const cajaSaldo=cajaIngTotal-cajaGasTotal;
+// Neto = producido - gastos del periodo - caja tomada del periodo
+const neto=inc-exp-cajaIngPeriodo;
 const savBal=db.savings.reduce((s,r)=>s+(r.type==='deposito'?r.amount:-r.amount),0);
 // Alerta de semana sin pagar
 const wr=weekRange();
@@ -241,8 +238,9 @@ document.getElementById('page-inicio').innerHTML=`<h2 class="section-title">Hola
 ${alertHtml}
 <div class="tabs"><div class="tab ${dashPeriod==='week'?'active':''}" onclick="dashPeriod='week';rDash()">Semana</div><div class="tab ${dashPeriod==='month'?'active':''}" onclick="dashPeriod='month';rDash()">Mes</div><div class="tab ${dashPeriod==='all'?'active':''}" onclick="dashPeriod='all';rDash()">Todo</div></div>
 ${f?`<p class="text-xs" style="text-align:center;margin-bottom:10px">${f} → ${t}</p>`:''}
-<div class="grid-2"><div class="card stat"><p class="value text-success">${fmt(inc)}</p><p class="label-text">Ingreso</p></div><div class="card stat"><p class="value text-warning">${fmt(cajaTotal)}</p><p class="label-text">Caja total</p></div><div class="card stat"><p class="value text-danger">${fmt(exp)}</p><p class="label-text">Gastos periodo</p></div><div class="card stat"><p class="value ${neto>=0?'text-success':'text-danger'}">${fmt(neto)}</p><p class="label-text">Neto</p></div></div>
-<div class="card"><h3 class="text-sm mb-2" style="font-weight:700;color:#555">Desglose</h3><div class="flex-between text-sm"><span>Gastos totales</span><span class="text-danger">${fmt(gastosTotal)}</span></div><div class="flex-between text-sm mt-2"><span>Cubiertos por caja</span><span>${fmt(Math.min(gastosTotal,cajaTotal))}</span></div><div class="flex-between text-sm mt-2"><span>Gastos del ingreso</span><span class="text-danger">${fmt(Math.max(0,gastosTotal-cajaTotal))}</span></div><div class="flex-between text-sm mt-2"><span>Caja sobrante</span><span class="text-success">${fmt(cajaSobrante)}</span></div></div>
+<div class="grid-2"><div class="card stat"><p class="value text-success">${fmt(inc)}</p><p class="label-text">Producido</p></div><div class="card stat"><p class="value text-danger">${fmt(exp)}</p><p class="label-text">Gastos</p></div><div class="card stat"><p class="value text-warning">${fmt(cajaIngPeriodo)}</p><p class="label-text">A caja</p></div><div class="card stat"><p class="value ${neto>=0?'text-success':'text-danger'}">${fmt(neto)}</p><p class="label-text">Neto</p></div></div>
+<div class="card"><h3 class="text-sm mb-2" style="font-weight:700;color:#555">Desglose</h3><div class="flex-between text-sm"><span>Producido</span><span class="text-success">${fmt(inc)}</span></div><div class="flex-between text-sm mt-2"><span>− Gastos (del producido)</span><span class="text-danger">${fmt(exp)}</span></div><div class="flex-between text-sm mt-2"><span>− Tomado a caja</span><span class="text-warning">${fmt(cajaIngPeriodo)}</span></div><div class="flex-between text-sm mt-2" style="border-top:1px solid #eee;padding-top:6px"><strong>= Neto</strong><strong class="${neto>=0?'text-success':'text-danger'}">${fmt(neto)}</strong></div></div>
+<div class="card"><h3 class="text-sm mb-2" style="font-weight:700;color:#555">Caja</h3><div class="flex-between text-sm"><span>Saldo en caja</span><span class="text-primary" style="font-weight:700">${fmt(cajaSaldo)}</span></div><div class="flex-between text-xs mt-2"><span>Gastos de caja (periodo)</span><span>${fmt(cajaGasPeriodo)}</span></div></div>
 <div class="card stat" style="background:rgba(16,185,129,.04);border-color:rgba(16,185,129,.15)"><p class="value text-success">${fmt(savBal)}</p><p class="label-text">Ahorro total</p></div>
 ${buildMonthlyGanancia()}`}
 
@@ -252,71 +250,52 @@ async function addKm(e){e.preventDefault();const k={id:uid(),date:document.getEl
 
 // ENTREGAS
 function getAutoKm(){
-  // Calcula km delta desde la seccion Km: ultimo registro menos el penultimo
   const sorted=[...db.km].sort((a,b)=>b.date.localeCompare(a.date));
   if(sorted.length>=2) return sorted[0].km_end - sorted[1].km_end;
   if(sorted.length===1) return sorted[0].km_end - sorted[0].km_start;
   return 0;
 }
-function checkOverlap(s,e,excludeId){
-  return db.deliveries.some(d=>{
-    if(excludeId&&d.id===excludeId) return false;
-    return s<=d.week_end && e>=d.week_start;
-  });
-}
 function calcDeuda(){
-  // Calcula deuda acumulada (entregas parciales o pendientes)
   const sorted=[...db.deliveries].sort((a,b)=>a.week_start.localeCompare(b.week_start));
   let deuda=0;
   sorted.forEach(d=>{deuda+=RENTA-(d.amount_paid||0)});
   return deuda;
 }
 function rEnt(){
-  const recs=[...db.deliveries].sort((a,b)=>b.week_end.localeCompare(a.week_end));
-  const wr=weekRange();
+  const recs=[...db.deliveries].sort((a,b)=>b.week_start.localeCompare(a.week_start));
   const autoKm=getAutoKm();
   const deudaTotal=calcDeuda();
-  // Total del mes actual
   const mr=monthRange();
   const totalMes=db.deliveries.filter(d=>inR(d.week_start,mr.from,mr.to)).reduce((s,d)=>s+(d.amount_paid||0),0);
   const entregasMes=db.deliveries.filter(d=>inR(d.week_start,mr.from,mr.to)).length;
-  // Numero de entrega siguiente
   const numEntrega=db.deliveries.length+1;
 
   document.getElementById('page-entregas').innerHTML=`<h2 class="section-title">Entregas Semanales</h2>
 <div class="card" style="background:#eff6ff;border-color:#bfdbfe"><div class="flex-between"><p class="text-sm" style="color:#1d4ed8">Renta: <strong>${fmt(RENTA)}</strong> / semana</p><p class="text-sm" style="color:#1d4ed8">Entrega #${numEntrega}</p></div></div>
 ${deudaTotal>0?`<div class="card" style="background:#fee2e2;border-color:#fca5a5"><div class="flex-between"><p class="text-sm" style="color:#991b1b">⚠️ Deuda acumulada</p><p class="text-sm" style="color:#991b1b;font-weight:800">${fmt(deudaTotal)}</p></div></div>`:''}
 <div class="card stat"><p class="value text-success">${fmt(totalMes)}</p><p class="label-text">Total mes actual (${entregasMes} entregas)</p></div>
-<div class="card"><form onsubmit="addEnt(event)"><div class="grid-2"><div><label>Desde</label><input type="date" id="ent-s" value="${wr.from}" required></div><div><label>Hasta</label><input type="date" id="ent-e" value="${wr.to}" required></div></div><div class="grid-2"><div><label>Km semana (auto: ${autoKm})</label><input type="number" id="ent-km" value="${autoKm}" placeholder="${autoKm}"></div><div><label>Pagado</label><input type="number" id="ent-p" value="420000" required></div></div><label>Notas (opcional)</label><input type="text" id="ent-notes" placeholder="Observaciones"><button class="btn" type="submit">Registrar entrega</button></form></div>
-<div class="card">${recs.length===0?'<p class="text-xs">Sin entregas</p>':recs.map((d,idx)=>{const entNum=recs.length-idx;const st=d.amount_paid>=RENTA?'pagado':d.amount_paid>0?'parcial':'pendiente';const diff=RENTA-(d.amount_paid||0);const gastos=db.expenses.filter(e=>e.date>=d.week_start&&e.date<=d.week_end);const totalGas=gastos.reduce((s,e)=>s+e.amount,0);const neto=d.amount_paid-totalGas;return`<div class="list-item"><div class="flex-between"><div><strong class="text-sm">#${entNum} · ${d.week_start} — ${d.week_end}</strong><br><span class="text-xs">${fmt(d.amount_paid)} · ${d.km_total||0} km${d.notes?' · '+d.notes:''}</span>${st==='parcial'?`<br><span class="text-xs text-danger">Debe: ${fmt(diff)}</span>`:''}</div><div style="display:flex;align-items:center;gap:8px"><span class="badge badge-${st==='pagado'?'green':st==='parcial'?'yellow':'red'}">${st}</span>${isSuperAdmin()?`<span class="text-xs text-primary" style="cursor:pointer" onclick="editEnt('${d.id}')">✏️</span><span class="text-xs text-danger" style="cursor:pointer" onclick="delEnt('${d.id}')">✕</span>`:''}</div></div>${gastos.length>0?`<div style="margin-top:8px;padding:8px;background:#fafafa;border-radius:8px"><p class="text-xs" style="font-weight:700;color:#555;margin-bottom:4px">Gastos de la semana:</p>${gastos.map(g=>`<div class="flex-between text-xs"><span>${g.description||g.category}</span><span class="text-danger">${fmt(g.amount)}</span></div>`).join('')}<div class="flex-between text-sm mt-2" style="border-top:1px solid #eee;padding-top:4px"><strong>Neto</strong><strong class="${neto>=0?'text-success':'text-danger'}">${fmt(neto)}</strong></div></div>`:''}</div>`}).join('')}</div>`}
+<div class="card"><form onsubmit="addEnt(event)"><label>Fecha de entrega</label><input type="date" id="ent-date" value="${today()}" required><div class="grid-2"><div><label>Km semana (auto: ${autoKm})</label><input type="number" id="ent-km" value="${autoKm}"></div><div><label>Pagado</label><input type="number" id="ent-p" value="420000" required></div></div><label>Notas (opcional)</label><input type="text" id="ent-notes" placeholder="Observaciones"><button class="btn" type="submit">Registrar entrega</button></form></div>
+<div class="card">${recs.length===0?'<p class="text-xs">Sin entregas</p>':recs.map((d,idx)=>{const entNum=recs.length-idx;const st=d.amount_paid>=RENTA?'pagado':d.amount_paid>0?'parcial':'pendiente';const diff=RENTA-(d.amount_paid||0);const gastos=db.expenses.filter(e=>e.date>=d.week_start&&e.date<=d.week_end);const cajaDelaSemana=db.petty_cash.filter(p=>p.type==='ingreso'&&p.date>=d.week_start&&p.date<=d.week_end).reduce((s,p)=>s+p.amount,0);const totalGas=gastos.reduce((s,e)=>s+e.amount,0);const neto=d.amount_paid-totalGas-cajaDelaSemana;return`<div class="list-item"><div class="flex-between"><div><strong class="text-sm">#${entNum} · ${d.week_start} — ${d.week_end}</strong><br><span class="text-xs">${fmt(d.amount_paid)} · ${d.km_total||0} km${d.notes?' · '+d.notes:''}</span>${st==='parcial'?`<br><span class="text-xs text-danger">Debe: ${fmt(diff)}</span>`:''}${cajaDelaSemana>0?`<br><span class="text-xs text-warning">Caja tomada: ${fmt(cajaDelaSemana)}</span>`:''}</div><div style="display:flex;align-items:center;gap:8px"><span class="badge badge-${st==='pagado'?'green':st==='parcial'?'yellow':'red'}">${st}</span>${isSuperAdmin()?`<span class="text-xs text-primary" style="cursor:pointer" onclick="editEnt('${d.id}')">✏️</span><span class="text-xs text-danger" style="cursor:pointer" onclick="delEnt('${d.id}')">✕</span>`:''}</div></div>${totalGas>0||cajaDelaSemana>0?`<div style="margin-top:8px;padding:8px;background:#fafafa;border-radius:8px">${gastos.length>0?`<p class="text-xs" style="font-weight:700;color:#555;margin-bottom:4px">Gastos:</p>${gastos.map(g=>`<div class="flex-between text-xs"><span>${g.description||g.category}</span><span class="text-danger">${fmt(g.amount)}</span></div>`).join('')}`:''}<div class="flex-between text-sm mt-2" style="border-top:1px solid #eee;padding-top:4px"><strong>Neto</strong><strong class="${neto>=0?'text-success':'text-danger'}">${fmt(neto)}</strong></div></div>`:''}</div>`}).join('')}</div>`}
 async function addEnt(e){
   e.preventDefault();
-  const s=document.getElementById('ent-s').value, en=document.getElementById('ent-e').value;
-  // Validar que hasta > desde
-  if(en<=s) return alert('La fecha "Hasta" debe ser posterior a "Desde".');
-  // Validar solapamiento
-  if(checkOverlap(s,en)){
-    if(!confirm('⚠️ Ya existe una entrega en ese rango de fechas. ¿Registrar de todos modos?')) return;
-  }
-  // Confirmacion antes de guardar
+  const dateVal=document.getElementById('ent-date').value;
+  const wr=weekRangeFor(dateVal);
   const monto=+document.getElementById('ent-p').value;
-  if(!confirm(`¿Registrar entrega #${db.deliveries.length+1}?\n${s} → ${en}\nMonto: ${fmt(monto)}`)) return;
-  db.deliveries.push({id:uid(),week_start:s,week_end:en,km_total:+document.getElementById('ent-km').value||0,amount_paid:monto,notes:document.getElementById('ent-notes').value||null,user:currentUser.name});
+  if(!confirm(`¿Registrar entrega #${db.deliveries.length+1}?\nSemana: ${wr.from} → ${wr.to}\nMonto: ${fmt(monto)}`)) return;
+  db.deliveries.push({id:uid(),week_start:wr.from,week_end:wr.to,date:dateVal,km_total:+document.getElementById('ent-km').value||0,amount_paid:monto,notes:document.getElementById('ent-notes').value||null,user:currentUser.name});
   await saveDB();rEnt();
 }
 async function delEnt(id){const code=prompt('Codigo para eliminar:');if(code!=='001')return alert('Codigo incorrecto');db.deliveries=db.deliveries.filter(x=>x.id!==id);await saveDB();rEnt()}
 async function editEnt(id){
   const code=prompt('Codigo para editar:');
   if(code!=='001') return alert('Codigo incorrecto');
-  const d=db.deliveries.find(x=>x.id===id);
-  if(!d) return;
-  const ns=prompt('Desde (YYYY-MM-DD):',d.week_start);if(!ns)return;
-  const ne=prompt('Hasta (YYYY-MM-DD):',d.week_end);if(!ne)return;
-  if(ne<=ns) return alert('Hasta debe ser posterior a Desde');
+  const d=db.deliveries.find(x=>x.id===id);if(!d)return;
+  const nd=prompt('Fecha (YYYY-MM-DD):',d.date||d.week_start);if(!nd)return;
+  const wr=weekRangeFor(nd);
   const nk=prompt('Km semana:',d.km_total);if(nk===null)return;
   const np=prompt('Monto pagado:',d.amount_paid);if(np===null)return;
   const nn=prompt('Notas:',d.notes||'');
-  d.week_start=ns;d.week_end=ne;d.km_total=+nk||0;d.amount_paid=+np||0;d.notes=nn||null;
+  d.date=nd;d.week_start=wr.from;d.week_end=wr.to;d.km_total=+nk||0;d.amount_paid=+np||0;d.notes=nn||null;
   await saveDB();rEnt();
 }
 
@@ -326,8 +305,19 @@ async function addGas(e){e.preventDefault();db.expenses.push({id:uid(),category:
 async function delGas(id){const code=prompt('Codigo para eliminar:');if(code!=='001')return alert('Codigo incorrecto');db.expenses=db.expenses.filter(x=>x.id!==id);await saveDB();rGas()}
 
 // CAJA MENOR
-function rCaja(){const recs=[...db.petty_cash].sort((a,b)=>b.week_end.localeCompare(a.week_end));const tot=recs.reduce((s,r)=>s+r.amount,0);const wr=weekRange();document.getElementById('page-caja').innerHTML=`<h2 class="section-title">Caja Menor</h2><div class="card stat" style="background:#fffbeb;border-color:#fde68a"><p class="value text-warning">${fmt(tot)}</p><p class="label-text">Total caja menor</p></div><div class="card"><form onsubmit="addCaja(event)"><div class="grid-2"><div><label>Semana inicio</label><input type="date" id="cj-s" value="${wr.from}" required></div><div><label>Semana fin</label><input type="date" id="cj-e" value="${wr.to}" required></div></div><label>Monto</label><input type="number" id="cj-amt" required><label>Descripcion</label><input type="text" id="cj-desc"><button class="btn" type="submit">Registrar</button></form></div><div class="card">${recs.length===0?'<p class="text-xs">Sin registros</p>':recs.map(r=>`<div class="list-item flex-between"><div><strong class="text-sm">${r.week_start} → ${r.week_end}</strong><br><span class="text-xs">${r.description||''}</span></div><div style="display:flex;align-items:center;gap:8px"><span class="text-warning" style="font-weight:700">${fmt(r.amount)}</span>${isSuperAdmin()?`<span class="text-xs text-danger" style="cursor:pointer" onclick="delCaja('${r.id}')">✕</span>`:''}</div></div>`).join('')}</div>`}
-async function addCaja(e){e.preventDefault();db.petty_cash.push({id:uid(),week_start:document.getElementById('cj-s').value,week_end:document.getElementById('cj-e').value,amount:+document.getElementById('cj-amt').value,description:document.getElementById('cj-desc').value});await saveDB();rCaja()}
+function rCaja(){
+  const recs=[...db.petty_cash].sort((a,b)=>(b.date||b.week_start||'').localeCompare(a.date||a.week_start||''));
+  const ingresos=recs.filter(r=>r.type==='ingreso').reduce((s,r)=>s+r.amount,0);
+  const gastosCaja=recs.filter(r=>r.type==='gasto').reduce((s,r)=>s+r.amount,0);
+  const saldo=ingresos-gastosCaja;
+  document.getElementById('page-caja').innerHTML=`<h2 class="section-title">Caja</h2>
+<div class="grid-2"><div class="card stat" style="background:#fffbeb;border-color:#fde68a"><p class="value text-warning">${fmt(ingresos)}</p><p class="label-text">Ingresado</p></div><div class="card stat"><p class="value text-danger">${fmt(gastosCaja)}</p><p class="label-text">Gastado</p></div></div>
+<div class="card stat" style="background:rgba(108,63,224,.04);border-color:rgba(108,63,224,.15)"><p class="value text-primary">${fmt(saldo)}</p><p class="label-text">Saldo en caja</p></div>
+<div class="card"><h3 class="text-sm mb-2" style="font-weight:700">➕ Tomar dinero a caja</h3><form onsubmit="addCajaIngreso(event)"><label>Fecha</label><input type="date" id="cj-date-in" value="${today()}" required><label>Monto</label><input type="number" id="cj-amt-in" required><label>Descripcion</label><input type="text" id="cj-desc-in" placeholder="De donde se toma"><button class="btn" type="submit">Registrar ingreso a caja</button></form></div>
+<div class="card"><h3 class="text-sm mb-2" style="font-weight:700">➖ Gasto de caja</h3><form onsubmit="addCajaGasto(event)"><label>Fecha</label><input type="date" id="cj-date-out" value="${today()}" required><label>Monto</label><input type="number" id="cj-amt-out" required><label>Descripcion</label><input type="text" id="cj-desc-out" placeholder="En que se gasto"><button class="btn" type="submit">Registrar gasto de caja</button></form></div>
+<div class="card"><h3 class="text-sm mb-2" style="font-weight:700">Movimientos</h3>${recs.length===0?'<p class="text-xs">Sin movimientos</p>':recs.map(r=>`<div class="list-item flex-between"><div><span>${r.type==='ingreso'?'➕':'➖'}</span> <strong class="text-sm">${r.type==='ingreso'?'Ingreso':'Gasto'}</strong><br><span class="text-xs">${r.date||r.week_start||''} · ${r.description||''}</span></div><div style="display:flex;align-items:center;gap:8px"><span style="font-weight:700" class="${r.type==='ingreso'?'text-warning':'text-danger'}">${r.type==='ingreso'?'+':'-'}${fmt(r.amount)}</span>${isSuperAdmin()?`<span class="text-xs text-danger" style="cursor:pointer" onclick="delCaja('${r.id}')">✕</span>`:''}</div></div>`).join('')}</div>`}
+async function addCajaIngreso(e){e.preventDefault();db.petty_cash.push({id:uid(),type:'ingreso',date:document.getElementById('cj-date-in').value,amount:+document.getElementById('cj-amt-in').value,description:document.getElementById('cj-desc-in').value||null});await saveDB();rCaja()}
+async function addCajaGasto(e){e.preventDefault();db.petty_cash.push({id:uid(),type:'gasto',date:document.getElementById('cj-date-out').value,amount:+document.getElementById('cj-amt-out').value,description:document.getElementById('cj-desc-out').value||null});await saveDB();rCaja()}
 async function delCaja(id){if(!confirm('Eliminar?'))return;db.petty_cash=db.petty_cash.filter(c=>c.id!==id);await saveDB();rCaja()}
 
 // AHORRO
