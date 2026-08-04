@@ -173,7 +173,15 @@
       "description": "Purina Dayky"
     }
   ],
-  "petty_cash": [],
+  "petty_cash": [
+    {
+      "id": "17858416829053rtzb",
+      "week_start": "2026-07-24",
+      "week_end": "2026-07-30",
+      "amount": 160000,
+      "description": ""
+    }
+  ],
   "notes": [],
   "savings": [],
   "savings_goal": {
