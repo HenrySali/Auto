@@ -166,6 +166,13 @@
       "week_end": "2026-07-30",
       "amount": 160000,
       "description": ""
+    },
+    {
+      "id": "1785852114736bepxx",
+      "type": "gasto",
+      "date": "2026-08-04",
+      "amount": 46000,
+      "description": "Puri a"
     }
   ],
   "notes": [],
