@@ -157,13 +157,6 @@
       "amount": 80000,
       "date": "2026-07-18",
       "description": "Cabify despedida Nadia - compra de dolares"
-    },
-    {
-      "id": "e2",
-      "category": "mantenimiento",
-      "amount": 46000,
-      "date": "2026-08-01",
-      "description": "Purina Dayky"
     }
   ],
   "petty_cash": [
