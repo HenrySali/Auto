@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="theme-color" content="#6C3FE0">
+<link rel="manifest" href="./manifest.json">
 <title>Auto Manager</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -199,13 +200,16 @@ function buildMonthlyGanancia(){
   const sorted=Object.keys(meses).sort((a,b)=>b.localeCompare(a));
   if(sorted.length===0) return '';
   const nombres=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  // Semanas esperadas por mes (aprox 4.3 pero usamos 4)
   const ESPERADO=RENTA*4;
+  // Caja es pozo total global, gastos se descuentan de ahi primero
+  const cajaTotal=db.petty_cash.reduce((s,p)=>s+p.amount,0);
+  const gastosTotal=db.expenses.reduce((s,e)=>s+e.amount,0);
+  const gastoDelIngreso=Math.max(0,gastosTotal-cajaTotal);
   const rows=sorted.map(m=>{
     const d=meses[m];
-    const gc=Math.min(d.gastos,d.caja);
-    const gi=d.gastos-gc;
-    const ganancia=d.ingreso-d.caja-gi;
+    // Proporcion de gastos del ingreso que corresponde a este mes
+    const propGasto=gastosTotal>0?(d.gastos/gastosTotal)*gastoDelIngreso:0;
+    const ganancia=d.ingreso-propGasto;
     const mesNum=parseInt(m.split('-')[1])-1;
     const anio=m.split('-')[0];
     const cumple=d.ingreso>=ESPERADO;
@@ -217,9 +221,15 @@ function buildMonthlyGanancia(){
 // DASHBOARD
 function rDash(){let f=null,t=null;if(dashPeriod==='week'){const r=weekRange();f=r.from;t=r.to}else if(dashPeriod==='month'){const r=monthRange();f=r.from;t=r.to}
 const inc=db.deliveries.filter(d=>!f||inR(d.week_start,f,t)).reduce((s,d)=>s+(d.amount_paid||0),0);
-const pc=db.petty_cash.filter(p=>!f||inR(p.week_start,f,t)).reduce((s,p)=>s+p.amount,0);
 const exp=db.expenses.filter(e=>!f||inR(e.date,f,t)).reduce((s,e)=>s+e.amount,0);
-const gc=Math.min(exp,pc),gi=exp-gc,neto=inc-pc-gi;
+// Caja es un pozo total: gastos se descuentan de la caja total primero
+const cajaTotal=db.petty_cash.reduce((s,p)=>s+p.amount,0);
+const gastosTotal=db.expenses.reduce((s,e)=>s+e.amount,0);
+const cajaSobrante=Math.max(0,cajaTotal-gastosTotal);
+// Para el periodo: cuanto del gasto se cubrio con caja
+const gc=Math.min(exp,cajaSobrante>0?Math.min(exp,cajaTotal-Math.max(0,gastosTotal-exp)):cajaTotal>=gastosTotal?exp:Math.max(0,cajaTotal-(gastosTotal-exp)));
+const gi=exp-gc;
+const neto=inc-gi;
 const savBal=db.savings.reduce((s,r)=>s+(r.type==='deposito'?r.amount:-r.amount),0);
 // Alerta de semana sin pagar
 const wr=weekRange();
@@ -230,8 +240,8 @@ document.getElementById('page-inicio').innerHTML=`<h2 class="section-title">Hola
 ${alertHtml}
 <div class="tabs"><div class="tab ${dashPeriod==='week'?'active':''}" onclick="dashPeriod='week';rDash()">Semana</div><div class="tab ${dashPeriod==='month'?'active':''}" onclick="dashPeriod='month';rDash()">Mes</div><div class="tab ${dashPeriod==='all'?'active':''}" onclick="dashPeriod='all';rDash()">Todo</div></div>
 ${f?`<p class="text-xs" style="text-align:center;margin-bottom:10px">${f} → ${t}</p>`:''}
-<div class="grid-2"><div class="card stat"><p class="value text-success">${fmt(inc)}</p><p class="label-text">Ingreso</p></div><div class="card stat"><p class="value text-warning">${fmt(pc)}</p><p class="label-text">Caja menor</p></div><div class="card stat"><p class="value text-danger">${fmt(exp)}</p><p class="label-text">Gastos</p></div><div class="card stat"><p class="value ${neto>=0?'text-success':'text-danger'}">${fmt(neto)}</p><p class="label-text">Neto</p></div></div>
-<div class="card"><h3 class="text-sm mb-2" style="font-weight:700;color:#555">Desglose</h3><div class="flex-between text-sm"><span>Gastos cubiertos por caja</span><span>${fmt(gc)}</span></div><div class="flex-between text-sm mt-2"><span>Gastos del ingreso</span><span class="text-danger">${fmt(gi)}</span></div><div class="flex-between text-sm mt-2"><span>Caja sobrante</span><span class="text-success">${fmt(pc-gc)}</span></div></div>
+<div class="grid-2"><div class="card stat"><p class="value text-success">${fmt(inc)}</p><p class="label-text">Ingreso</p></div><div class="card stat"><p class="value text-warning">${fmt(cajaTotal)}</p><p class="label-text">Caja total</p></div><div class="card stat"><p class="value text-danger">${fmt(exp)}</p><p class="label-text">Gastos periodo</p></div><div class="card stat"><p class="value ${neto>=0?'text-success':'text-danger'}">${fmt(neto)}</p><p class="label-text">Neto</p></div></div>
+<div class="card"><h3 class="text-sm mb-2" style="font-weight:700;color:#555">Desglose</h3><div class="flex-between text-sm"><span>Gastos totales</span><span class="text-danger">${fmt(gastosTotal)}</span></div><div class="flex-between text-sm mt-2"><span>Cubiertos por caja</span><span>${fmt(Math.min(gastosTotal,cajaTotal))}</span></div><div class="flex-between text-sm mt-2"><span>Gastos del ingreso</span><span class="text-danger">${fmt(Math.max(0,gastosTotal-cajaTotal))}</span></div><div class="flex-between text-sm mt-2"><span>Caja sobrante</span><span class="text-success">${fmt(cajaSobrante)}</span></div></div>
 <div class="card stat" style="background:rgba(16,185,129,.04);border-color:rgba(16,185,129,.15)"><p class="value text-success">${fmt(savBal)}</p><p class="label-text">Ahorro total</p></div>
 ${buildMonthlyGanancia()}`}
 
@@ -360,7 +370,10 @@ async function addNota(e){e.preventDefault();db.notes.push({id:uid(),author:curr
 // INIT
 function showApp(){document.getElementById('login-screen').classList.add('hidden');document.getElementById('app-screen').classList.remove('hidden');document.getElementById('header-user').textContent=`${currentUser.name} - ${currentUser.role==='admin'?'Admin':'Conductor'}`;buildNav();nav('inicio')}
 async function init(){if(!ghToken){document.getElementById('token-screen').classList.remove('hidden');return}await loadDB();if(currentUser){const exists=db.users.find(u=>u.id===currentUser.id);if(exists){showApp();return}currentUser=null;localStorage.removeItem('current_user')}document.getElementById('login-screen').classList.remove('hidden')}
-if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(r=>r.forEach(x=>x.unregister()));caches.keys().then(n=>n.forEach(x=>caches.delete(x)))}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js')}
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;const b=document.createElement('div');b.id='install-banner';b.innerHTML='<div style="position:fixed;top:0;left:0;right:0;background:#6C3FE0;color:#fff;padding:12px 16px;z-index:300;display:flex;justify-content:space-between;align-items:center;font-size:.85rem"><span>📲 Instalar Auto Manager</span><button onclick="installApp()" style="background:#fff;color:#6C3FE0;border:none;padding:6px 14px;border-radius:8px;font-weight:700;cursor:pointer">Instalar</button></div>';document.body.appendChild(b)});
+function installApp(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;const b=document.getElementById('install-banner');if(b)b.remove()})}}
 init();
 </script>
 </body>
