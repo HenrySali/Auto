@@ -176,6 +176,44 @@ function uid(){return Date.now()+''+Math.random().toString(36).substr(2,5)}
 
 function render(p){switch(p){case'inicio':rDash();break;case'km':rKm();break;case'entregas':rEnt();break;case'gastos':rGas();break;case'caja':rCaja();break;case'ahorro':rAhorro();break;case'backup':rBackup();break;case'notas':rNotas();break}}
 
+// GANANCIA MENSUAL
+function buildMonthlyGanancia(){
+  // Agrupar entregas por mes (YYYY-MM basado en week_start)
+  const meses={};
+  db.deliveries.forEach(d=>{
+    const m=d.week_start.substring(0,7); // "2026-07"
+    if(!meses[m]) meses[m]={ingreso:0,gastos:0,caja:0,entregas:0};
+    meses[m].ingreso+=(d.amount_paid||0);
+    meses[m].entregas++;
+  });
+  db.expenses.forEach(e=>{
+    const m=e.date.substring(0,7);
+    if(!meses[m]) meses[m]={ingreso:0,gastos:0,caja:0,entregas:0};
+    meses[m].gastos+=e.amount;
+  });
+  db.petty_cash.forEach(p=>{
+    const m=p.week_start.substring(0,7);
+    if(!meses[m]) meses[m]={ingreso:0,gastos:0,caja:0,entregas:0};
+    meses[m].caja+=p.amount;
+  });
+  const sorted=Object.keys(meses).sort((a,b)=>b.localeCompare(a));
+  if(sorted.length===0) return '';
+  const nombres=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  // Semanas esperadas por mes (aprox 4.3 pero usamos 4)
+  const ESPERADO=RENTA*4;
+  const rows=sorted.map(m=>{
+    const d=meses[m];
+    const gc=Math.min(d.gastos,d.caja);
+    const gi=d.gastos-gc;
+    const ganancia=d.ingreso-d.caja-gi;
+    const mesNum=parseInt(m.split('-')[1])-1;
+    const anio=m.split('-')[0];
+    const cumple=d.ingreso>=ESPERADO;
+    return`<div class="list-item"><div class="flex-between"><div><strong class="text-sm">${nombres[mesNum]} ${anio}</strong><br><span class="text-xs">${d.entregas} entregas · Ingreso: ${fmt(d.ingreso)}</span></div><div style="text-align:right"><span style="font-weight:700" class="${ganancia>=0?'text-success':'text-danger'}">${fmt(ganancia)}</span><br><span class="badge badge-${cumple?'green':'yellow'}">${cumple?'cumple':'parcial'}</span></div></div></div>`;
+  }).join('');
+  return`<div class="card"><h3 class="text-sm mb-2" style="font-weight:700;color:#555">📅 Ganancia por mes</h3>${rows}</div>`;
+}
+
 // DASHBOARD
 function rDash(){let f=null,t=null;if(dashPeriod==='week'){const r=weekRange();f=r.from;t=r.to}else if(dashPeriod==='month'){const r=monthRange();f=r.from;t=r.to}
 const inc=db.deliveries.filter(d=>!f||inR(d.week_start,f,t)).reduce((s,d)=>s+(d.amount_paid||0),0);
@@ -194,7 +232,8 @@ ${alertHtml}
 ${f?`<p class="text-xs" style="text-align:center;margin-bottom:10px">${f} → ${t}</p>`:''}
 <div class="grid-2"><div class="card stat"><p class="value text-success">${fmt(inc)}</p><p class="label-text">Ingreso</p></div><div class="card stat"><p class="value text-warning">${fmt(pc)}</p><p class="label-text">Caja menor</p></div><div class="card stat"><p class="value text-danger">${fmt(exp)}</p><p class="label-text">Gastos</p></div><div class="card stat"><p class="value ${neto>=0?'text-success':'text-danger'}">${fmt(neto)}</p><p class="label-text">Neto</p></div></div>
 <div class="card"><h3 class="text-sm mb-2" style="font-weight:700;color:#555">Desglose</h3><div class="flex-between text-sm"><span>Gastos cubiertos por caja</span><span>${fmt(gc)}</span></div><div class="flex-between text-sm mt-2"><span>Gastos del ingreso</span><span class="text-danger">${fmt(gi)}</span></div><div class="flex-between text-sm mt-2"><span>Caja sobrante</span><span class="text-success">${fmt(pc-gc)}</span></div></div>
-<div class="card stat" style="background:rgba(16,185,129,.04);border-color:rgba(16,185,129,.15)"><p class="value text-success">${fmt(savBal)}</p><p class="label-text">Ahorro total</p></div>`}
+<div class="card stat" style="background:rgba(16,185,129,.04);border-color:rgba(16,185,129,.15)"><p class="value text-success">${fmt(savBal)}</p><p class="label-text">Ahorro total</p></div>
+${buildMonthlyGanancia()}`}
 
 // KM
 function rKm(){const recs=[...db.km].sort((a,b)=>b.date.localeCompare(a.date));document.getElementById('page-km').innerHTML=`<h2 class="section-title">Kilometraje</h2><div class="card"><form onsubmit="addKm(event)"><div class="grid-2"><div><label>Fecha</label><input type="date" id="km-date" value="${today()}"></div><div></div></div><div class="grid-2"><div><label>Km inicio</label><input type="number" id="km-start" required></div><div><label>Km fin</label><input type="number" id="km-end" required></div></div><button class="btn" type="submit">Registrar</button></form></div><div class="card">${recs.length===0?'<p class="text-xs">Sin registros</p>':recs.slice(0,14).map(r=>`<div class="list-item flex-between"><div><strong class="text-sm">${r.date}</strong><br><span class="text-xs">${r.km_start} → ${r.km_end}</span></div><span class="text-primary" style="font-weight:700">${r.km_end-r.km_start} km</span></div>`).join('')}</div>`}
