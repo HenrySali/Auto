@@ -85,17 +85,7 @@
       "user": "Henry"
     }
   ],
-  "deliveries": [
-    {
-      "id": "d2",
-      "week_start": "2026-06-27",
-      "week_end": "2026-07-03",
-      "km_total": 25801,
-      "amount_paid": 420000,
-      "notes": "3",
-      "user": "Mauricio"
-    }
-  ],
+  "deliveries": [],
   "expenses": [
     {
       "id": "e0",
