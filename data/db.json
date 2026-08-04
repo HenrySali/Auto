@@ -166,6 +166,13 @@
       "date": "2026-08-04",
       "amount": 46000,
       "description": "Puri a"
+    },
+    {
+      "id": "1785852241129hm0t8",
+      "type": "ingreso",
+      "date": "2026-07-26",
+      "amount": 160000,
+      "description": "Dinero que trajo en efectivo, Leandro"
     }
   ],
   "notes": [],
