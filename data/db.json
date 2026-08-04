@@ -157,6 +157,13 @@
       "amount": 80000,
       "date": "2026-07-18",
       "description": "Cabify despedida Nadia - compra de dolares"
+    },
+    {
+      "id": "1785847341495n40pg",
+      "category": "otro",
+      "amount": 46000,
+      "date": "2026-07-24",
+      "description": "Purina"
     }
   ],
   "petty_cash": [
