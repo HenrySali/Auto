@@ -139,6 +139,15 @@
       "amount_paid": 420000,
       "notes": null,
       "user": "Henry"
+    },
+    {
+      "id": "1785840412273ahd6x",
+      "week_start": "2026-07-25",
+      "week_end": "2026-07-31",
+      "km_total": 1145,
+      "amount_paid": 420000,
+      "notes": null,
+      "user": "Henry"
     }
   ],
   "expenses": [
