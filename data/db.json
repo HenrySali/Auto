@@ -85,7 +85,71 @@
       "user": "Henry"
     }
   ],
-  "deliveries": [],
+  "deliveries": [
+    {
+      "id": "d0",
+      "week_start": "2026-06-13",
+      "week_end": "2026-06-20",
+      "km_total": 23564,
+      "amount_paid": 420000,
+      "notes": "1 Entrega",
+      "user": "Henry"
+    },
+    {
+      "id": "d1",
+      "week_start": "2026-06-20",
+      "week_end": "2026-06-27",
+      "km_total": 24675,
+      "amount_paid": 420000,
+      "notes": "2 Entrega",
+      "user": "Henry"
+    },
+    {
+      "id": "d2",
+      "week_start": "2026-06-27",
+      "week_end": "2026-07-03",
+      "km_total": 25801,
+      "amount_paid": 420000,
+      "notes": "3",
+      "user": "Mauricio"
+    },
+    {
+      "id": "d3",
+      "week_start": "2026-07-04",
+      "week_end": "2026-07-10",
+      "km_total": 1067,
+      "amount_paid": 420000,
+      "notes": "5",
+      "user": "Henry"
+    },
+    {
+      "id": "d4",
+      "week_start": "2026-07-10",
+      "week_end": "2026-07-18",
+      "km_total": 1456,
+      "amount_paid": 420000,
+      "notes": "-80000 dolares y 30000 cabify aeropuerto despedida de Nadia a Colombia, este km es hasta hoy martes  21 06 de 2026",
+      "user": "Henry"
+    },
+    {
+      "id": "d5",
+      "week_start": "2026-07-17",
+      "week_end": "2026-07-25",
+      "km_total": 29135,
+      "amount_paid": 420000,
+      "notes": null,
+      "user": "Henry"
+    },
+    {
+      "id": "d6",
+      "week_start": "2026-07-24",
+      "week_end": "2026-08-01",
+      "km_total": 1145,
+      "amount_paid": 420000,
+      "notes": null,
+      "user": "Henry"
+    }
+  ],
   "expenses": [
     {
       "id": "e0",
@@ -93,6 +157,20 @@
       "amount": 80000,
       "date": "2026-07-18",
       "description": "Cabify despedida Nadia - compra de dolares"
+    },
+    {
+      "id": "e1",
+      "category": "mantenimiento",
+      "amount": 160000,
+      "date": "2026-07-27",
+      "description": "Ahorro 1"
+    },
+    {
+      "id": "e2",
+      "category": "mantenimiento",
+      "amount": 46000,
+      "date": "2026-08-01",
+      "description": "Purina Dayky"
     }
   ],
   "petty_cash": [],
