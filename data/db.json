@@ -159,13 +159,6 @@
       "description": "Cabify despedida Nadia - compra de dolares"
     },
     {
-      "id": "e1",
-      "category": "mantenimiento",
-      "amount": 160000,
-      "date": "2026-07-27",
-      "description": "Ahorro 1"
-    },
-    {
       "id": "e2",
       "category": "mantenimiento",
       "amount": 46000,
