@@ -134,12 +134,13 @@
     },
     {
       "id": "d5",
-      "week_start": "2026-07-18",
-      "week_end": "2026-07-24",
-      "km_total": 29135,
+      "week_start": "2026-07-13",
+      "week_end": "2026-07-19",
+      "km_total": 28324,
       "amount_paid": 420000,
       "notes": null,
-      "user": "Henry"
+      "user": "Henry",
+      "date": "2026-07-18"
     },
     {
       "id": "1785840412273ahd6x",
