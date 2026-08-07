@@ -194,13 +194,6 @@
       "date": "2026-08-06",
       "amount": 205000,
       "description": "Mantenimiento auto"
-    },
-    {
-      "id": "17860709119589yzb0",
-      "type": "gasto",
-      "date": "2026-08-02",
-      "amount": 50000,
-      "description": "Corte pelo dayky"
     }
   ],
   "notes": [],
