@@ -107,12 +107,13 @@
     },
     {
       "id": "d2",
-      "week_start": "2026-06-27",
-      "week_end": "2026-07-03",
+      "week_start": "2026-06-29",
+      "week_end": "2026-07-05",
       "km_total": 25801,
       "amount_paid": 420000,
       "notes": "3",
-      "user": "Mauricio"
+      "user": "Mauricio",
+      "date": "2026-07-04"
     },
     {
       "id": "d3",
