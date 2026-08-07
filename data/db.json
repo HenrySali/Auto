@@ -154,6 +154,16 @@
       "amount_paid": 420000,
       "notes": null,
       "user": "Henry"
+    },
+    {
+      "id": "1786070827874qaolz",
+      "week_start": "2026-07-20",
+      "week_end": "2026-07-26",
+      "date": "2026-07-26",
+      "km_total": 811,
+      "amount_paid": 420000,
+      "notes": "Acá descuenta caja 160",
+      "user": "Henry"
     }
   ],
   "expenses": [
