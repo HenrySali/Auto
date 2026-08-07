@@ -194,6 +194,13 @@
       "date": "2026-08-06",
       "amount": 205000,
       "description": "Mantenimiento auto"
+    },
+    {
+      "id": "178607401274631xr8",
+      "type": "gasto",
+      "date": "2026-08-02",
+      "amount": 45000,
+      "description": "Corte del peludo 4 patas"
     }
   ],
   "notes": [],
