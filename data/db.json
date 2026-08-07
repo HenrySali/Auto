@@ -88,13 +88,13 @@
   "deliveries": [
     {
       "id": "d0",
-      "week_start": "2026-06-08",
-      "week_end": "2026-06-14",
+      "week_start": "2026-06-15",
+      "week_end": "2026-06-21",
       "km_total": 1246,
       "amount_paid": 420000,
       "notes": "1 Entrega",
       "user": "Henry",
-      "date": "2026-06-13"
+      "date": "2026-06-20"
     },
     {
       "id": "d1",
