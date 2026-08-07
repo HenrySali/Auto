@@ -186,6 +186,13 @@
       "date": "2026-08-02",
       "amount": 55000,
       "description": "Trajo en efectivo no se consigno"
+    },
+    {
+      "id": "1786070387355t7wct",
+      "type": "gasto",
+      "date": "2026-08-06",
+      "amount": 205000,
+      "description": "Mantenimiento auto"
     }
   ],
   "notes": [],
