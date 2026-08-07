@@ -179,6 +179,13 @@
       "date": "2026-07-26",
       "amount": 160000,
       "description": "Dinero que trajo en efectivo, Leandro"
+    },
+    {
+      "id": "1786070280730ft108",
+      "type": "ingreso",
+      "date": "2026-08-02",
+      "amount": 55000,
+      "description": "Trajo en efectivo no se consigno"
     }
   ],
   "notes": [],
