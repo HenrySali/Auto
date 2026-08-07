@@ -124,12 +124,13 @@
     },
     {
       "id": "d4",
-      "week_start": "2026-07-11",
-      "week_end": "2026-07-17",
+      "week_start": "2026-07-06",
+      "week_end": "2026-07-12",
       "km_total": 1456,
       "amount_paid": 420000,
       "notes": "-80000 dolares y 30000 cabify aeropuerto despedida de Nadia a Colombia, este km es hasta hoy martes  21 06 de 2026",
-      "user": "Henry"
+      "user": "Henry",
+      "date": "2026-07-11"
     },
     {
       "id": "d5",
