@@ -187,7 +187,8 @@
       "km_total": 1353,
       "amount_paid": 420000,
       "notes": null,
-      "user": "Henry"
+      "user": "Henry",
+      "recibo_url": "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-08-16-1786967242319.jpeg"
     }
   ],
   "expenses": [
