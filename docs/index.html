@@ -199,7 +199,7 @@ function rInfracciones(){
   document.getElementById('page-infracciones').innerHTML=`<h2 class="section-title">🚨 Consulta de Infracciones</h2>
 <div class="card">
 <p class="text-sm mb-3">Consulta infracciones de tránsito en Buenos Aires.</p>
-${esSuperAdmin?`<div style="background:#f0f0f0;padding:10px 14px;border-radius:10px;margin-bottom:12px"><p class="text-xs" style="color:#555">DNI conductor:</p><p style="font-size:1.1rem;font-weight:700;color:#333;letter-spacing:1px">94.827.784</p></div>`:''}
+${esSuperAdmin?`<div style="background:#f0f0f0;padding:10px 14px;border-radius:10px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center"><div><p class="text-xs" style="color:#555">DNI conductor:</p><p style="font-size:1.1rem;font-weight:700;color:#333;letter-spacing:1px">94827784</p></div><button onclick="navigator.clipboard.writeText('94827784');this.textContent='✓ Copiado';setTimeout(()=>this.textContent='📋 Copiar',1500)" style="background:#6C3FE0;color:#fff;border:none;padding:6px 12px;border-radius:8px;font-size:.75rem;cursor:pointer;font-weight:600">📋 Copiar</button></div>`:''}
 <a href="https://buenosaires.gob.ar/licenciasdeconducir/consulta-de-infracciones/?actas=transito" target="_blank" class="btn" style="display:block;text-align:center;text-decoration:none">🔍 Consultar infracciones (CABA)</a>
 </div>
 <div class="card" style="background:#fffbeb;border-color:#fde68a">
