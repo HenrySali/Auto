@@ -1,12 +1,6 @@
 {
   "users": [
     {
-      "id": 1,
-      "name": "Henry",
-      "password": "Socios2026",
-      "role": "superadmin"
-    },
-    {
       "id": 3,
       "name": "Nadia",
       "password": "Socios2026",
