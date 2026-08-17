@@ -210,6 +210,7 @@ function renderVehicleList(){
   } else {
     html=db.vehicles.map(v=>`<div class="vehicle-card" onclick="selectVehicle('${v.id}')">
 <div class="patente">🚗 ${v.patente}</div>
+${v.marca_modelo?`<div class="text-xs" style="margin-top:2px;color:#6C3FE0;font-weight:600">${v.marca_modelo}</div>`:''}
 <div class="conductor">👤 ${v.conductor}</div>
 ${v.descripcion?`<div class="text-xs" style="margin-top:4px">${v.descripcion}</div>`:''}
 </div>`).join('');
@@ -218,8 +219,9 @@ ${v.descripcion?`<div class="text-xs" style="margin-top:4px">${v.descripcion}</d
     html+=`<div class="card" style="margin-top:16px">
 <h3 class="text-sm mb-2" style="font-weight:700">➕ Agregar vehiculo</h3>
 <label>Patente</label><input type="text" id="veh-patente" placeholder="Ej: AB123CD" style="text-transform:uppercase">
+<label>Marca y modelo</label><input type="text" id="veh-marca" placeholder="Ej: Fiat Cronos">
 <label>Conductor</label><input type="text" id="veh-conductor" placeholder="Nombre del conductor">
-<label>Descripcion (opcional)</label><input type="text" id="veh-desc" placeholder="Modelo, color, etc.">
+<label>Descripcion (opcional)</label><input type="text" id="veh-desc" placeholder="Color, año, etc.">
 <button class="btn" onclick="addVehicle()">Agregar vehiculo</button>
 </div>`;
   }
@@ -228,11 +230,12 @@ ${v.descripcion?`<div class="text-xs" style="margin-top:4px">${v.descripcion}</d
 
 async function addVehicle(){
   const patente=document.getElementById('veh-patente').value.trim().toUpperCase();
+  const marca_modelo=document.getElementById('veh-marca').value.trim();
   const conductor=document.getElementById('veh-conductor').value.trim();
   const descripcion=document.getElementById('veh-desc').value.trim();
   if(!patente||!conductor)return alert('Completa patente y conductor');
   if(db.vehicles.find(v=>v.patente===patente))return alert('Ya existe un vehiculo con esa patente');
-  db.vehicles.push({id:uid(),patente,conductor,descripcion:descripcion||null,savings_goal:{target:0,title:'Meta de ahorro'}});
+  db.vehicles.push({id:uid(),patente,marca_modelo:marca_modelo||null,conductor,descripcion:descripcion||null,savings_goal:{target:0,title:'Meta de ahorro'}});
   await saveDB();
   renderVehicleList();
 }
@@ -351,30 +354,33 @@ function rVehiculos(){
   document.getElementById('page-vehiculos').innerHTML=`<h2 class="section-title">🚗 Gestion de Vehiculos</h2>
 <div class="card"><h3 class="text-sm mb-2" style="font-weight:700">Agregar vehiculo</h3>
 <label>Patente</label><input type="text" id="veh2-patente" placeholder="Ej: AB123CD" style="text-transform:uppercase">
+<label>Marca y modelo</label><input type="text" id="veh2-marca" placeholder="Ej: Fiat Cronos">
 <label>Conductor</label><input type="text" id="veh2-conductor" placeholder="Nombre del conductor">
-<label>Descripcion (opcional)</label><input type="text" id="veh2-desc" placeholder="Modelo, color, etc.">
+<label>Descripcion (opcional)</label><input type="text" id="veh2-desc" placeholder="Color, año, etc.">
 <button class="btn" onclick="addVehicle2()">Agregar vehiculo</button>
 </div>
 <div class="card"><h3 class="text-sm mb-2" style="font-weight:700">Vehiculos registrados</h3>
-${db.vehicles.length===0?'<p class="text-xs">Sin vehiculos</p>':db.vehicles.map(v=>`<div class="list-item flex-between"><div><strong class="text-sm">🚗 ${v.patente}</strong><br><span class="text-xs">👤 ${v.conductor}${v.descripcion?' - '+v.descripcion:''}</span></div><div style="display:flex;gap:6px;align-items:center"><button onclick="editVehicle('${v.id}')" style="font-size:.7rem;background:#eff6ff;color:#1d4ed8;border:none;padding:4px 8px;border-radius:8px;cursor:pointer">✏️</button><button onclick="deleteVehicle2('${v.id}')" style="font-size:.7rem;background:#fee2e2;color:#991b1b;border:none;padding:4px 8px;border-radius:8px;cursor:pointer">✕</button></div></div>`).join('')}
+${db.vehicles.length===0?'<p class="text-xs">Sin vehiculos</p>':db.vehicles.map(v=>`<div class="list-item flex-between"><div><strong class="text-sm">🚗 ${v.patente}</strong><br><span class="text-xs">${v.marca_modelo?v.marca_modelo+' · ':''}👤 ${v.conductor}${v.descripcion?' · '+v.descripcion:''}</span></div><div style="display:flex;gap:6px;align-items:center"><button onclick="editVehicle('${v.id}')" style="font-size:.7rem;background:#eff6ff;color:#1d4ed8;border:none;padding:4px 8px;border-radius:8px;cursor:pointer">✏️</button><button onclick="deleteVehicle2('${v.id}')" style="font-size:.7rem;background:#fee2e2;color:#991b1b;border:none;padding:4px 8px;border-radius:8px;cursor:pointer">✕</button></div></div>`).join('')}
 </div>`;
 }
 async function addVehicle2(){
   const patente=document.getElementById('veh2-patente').value.trim().toUpperCase();
+  const marca_modelo=document.getElementById('veh2-marca').value.trim();
   const conductor=document.getElementById('veh2-conductor').value.trim();
   const descripcion=document.getElementById('veh2-desc').value.trim();
   if(!patente||!conductor)return alert('Completa patente y conductor');
   if(db.vehicles.find(v=>v.patente===patente))return alert('Ya existe un vehiculo con esa patente');
-  db.vehicles.push({id:uid(),patente,conductor,descripcion:descripcion||null,savings_goal:{target:0,title:'Meta de ahorro'}});
+  db.vehicles.push({id:uid(),patente,marca_modelo:marca_modelo||null,conductor,descripcion:descripcion||null,savings_goal:{target:0,title:'Meta de ahorro'}});
   await saveDB();
   rVehiculos();
 }
 async function editVehicle(id){
   const v=db.vehicles.find(x=>x.id===id);if(!v)return;
   const np=prompt('Patente:',v.patente);if(!np)return;
+  const nm=prompt('Marca y modelo:',v.marca_modelo||'');
   const nc=prompt('Conductor:',v.conductor);if(!nc)return;
   const nd=prompt('Descripcion:',v.descripcion||'');
-  v.patente=np.trim().toUpperCase();v.conductor=nc.trim();v.descripcion=nd.trim()||null;
+  v.patente=np.trim().toUpperCase();v.marca_modelo=nm?nm.trim():null;v.conductor=nc.trim();v.descripcion=nd.trim()||null;
   await saveDB();
   rVehiculos();
 }
