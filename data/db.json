@@ -25,6 +25,18 @@
       "role": "superadmin"
     }
   ],
+  "vehicles": [
+    {
+      "id": "v1",
+      "patente": "AG346 MH",
+      "conductor": "Leandro",
+      "descripcion": null,
+      "savings_goal": {
+        "target": 0,
+        "title": "Meta de ahorro"
+      }
+    }
+  ],
   "km": [
     {
       "id": "k0",
@@ -32,7 +44,8 @@
       "km_start": 22318,
       "km_end": 23564,
       "notes": "Uno",
-      "user": "Henry"
+      "user": "Henry",
+      "vehicle_id": "v1"
     },
     {
       "id": "k1",
@@ -40,7 +53,8 @@
       "km_start": 23564,
       "km_end": 24675,
       "notes": "Dos Entrega",
-      "user": "Henry"
+      "user": "Henry",
+      "vehicle_id": "v1"
     },
     {
       "id": "k2",
@@ -48,7 +62,8 @@
       "km_start": 24575,
       "km_end": 25801,
       "notes": "4",
-      "user": "Mauricio"
+      "user": "Mauricio",
+      "vehicle_id": "v1"
     },
     {
       "id": "k3",
@@ -56,7 +71,8 @@
       "km_start": 24575,
       "km_end": 25801,
       "notes": "3 ",
-      "user": "Mauricio"
+      "user": "Mauricio",
+      "vehicle_id": "v1"
     },
     {
       "id": "k4",
@@ -64,7 +80,8 @@
       "km_start": 25801,
       "km_end": 26868,
       "notes": "5",
-      "user": "Henry"
+      "user": "Henry",
+      "vehicle_id": "v1"
     },
     {
       "id": "k5",
@@ -72,7 +89,8 @@
       "km_start": 26868,
       "km_end": 28324,
       "notes": null,
-      "user": "Henry"
+      "user": "Henry",
+      "vehicle_id": "v1"
     },
     {
       "id": "k6",
@@ -80,7 +98,8 @@
       "km_start": 28324,
       "km_end": 29135,
       "notes": null,
-      "user": "Henry"
+      "user": "Henry",
+      "vehicle_id": "v1"
     },
     {
       "id": "k7",
@@ -88,19 +107,22 @@
       "km_start": 29135,
       "km_end": 30280,
       "notes": null,
-      "user": "Henry"
+      "user": "Henry",
+      "vehicle_id": "v1"
     },
     {
       "id": "1786327819263rxhnb",
       "date": "2026-08-10",
       "km_start": 30280,
-      "km_end": 31502
+      "km_end": 31502,
+      "vehicle_id": "v1"
     },
     {
       "id": "1786966843920w3w8w",
       "date": "2026-08-17",
       "km_start": 31502,
-      "km_end": 32855
+      "km_end": 32855,
+      "vehicle_id": "v1"
     }
   ],
   "deliveries": [
@@ -112,7 +134,8 @@
       "amount_paid": 420000,
       "notes": "Completos entrega",
       "user": "Henry",
-      "date": "2026-06-20"
+      "date": "2026-06-20",
+      "vehicle_id": "v1"
     },
     {
       "id": "d1",
@@ -122,7 +145,8 @@
       "amount_paid": 420000,
       "notes": "Completo",
       "user": "Henry",
-      "date": "2026-06-27"
+      "date": "2026-06-27",
+      "vehicle_id": "v1"
     },
     {
       "id": "d2",
@@ -132,7 +156,8 @@
       "amount_paid": 420000,
       "notes": "Completo Transferencia",
       "user": "Mauricio",
-      "date": "2026-07-04"
+      "date": "2026-07-04",
+      "vehicle_id": "v1"
     },
     {
       "id": "d4",
@@ -142,7 +167,8 @@
       "amount_paid": 420000,
       "notes": "170 mil Diezmo Nadia",
       "user": "Henry",
-      "date": "2026-07-11"
+      "date": "2026-07-11",
+      "vehicle_id": "v1"
     },
     {
       "id": "d5",
@@ -152,7 +178,8 @@
       "amount_paid": 420000,
       "notes": null,
       "user": "Henry",
-      "date": "2026-07-18"
+      "date": "2026-07-18",
+      "vehicle_id": "v1"
     },
     {
       "id": "1786070074663xlptl",
@@ -162,7 +189,8 @@
       "km_total": 1145,
       "amount_paid": 420000,
       "notes": null,
-      "user": "Henry"
+      "user": "Henry",
+      "vehicle_id": "v1"
     },
     {
       "id": "1786070827874qaolz",
@@ -172,7 +200,8 @@
       "km_total": 811,
       "amount_paid": 420000,
       "notes": null,
-      "user": "Henry"
+      "user": "Henry",
+      "vehicle_id": "v1"
     },
     {
       "id": "1786327866173ph3ah",
@@ -183,7 +212,8 @@
       "amount_paid": 420000,
       "notes": "Completo ",
       "user": "Henry",
-      "recibo_url": "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-08-09-1786964932265.jpeg"
+      "recibo_url": "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-08-09-1786964932265.jpeg",
+      "vehicle_id": "v1"
     },
     {
       "id": "1786966908540eje46",
@@ -194,7 +224,8 @@
       "amount_paid": 420000,
       "notes": null,
       "user": "Henry",
-      "recibo_url": "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-08-16-1786967265234.jpeg"
+      "recibo_url": "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-08-16-1786967265234.jpeg",
+      "vehicle_id": "v1"
     }
   ],
   "expenses": [
@@ -203,7 +234,8 @@
       "category": "mantenimiento",
       "amount": 80000,
       "date": "2026-07-18",
-      "description": "Cabify despedida Nadia - compra de dolares"
+      "description": "Cabify despedida Nadia - compra de dolares",
+      "vehicle_id": "v1"
     }
   ],
   "petty_cash": [
@@ -212,35 +244,40 @@
       "type": "gasto",
       "date": "2026-08-04",
       "amount": 46000,
-      "description": "Puri a"
+      "description": "Puri a",
+      "vehicle_id": "v1"
     },
     {
       "id": "1785852241129hm0t8",
       "type": "ingreso",
       "date": "2026-07-26",
       "amount": 160000,
-      "description": "Dinero que trajo en efectivo, Leandro"
+      "description": "Dinero que trajo en efectivo, Leandro",
+      "vehicle_id": "v1"
     },
     {
       "id": "1786070280730ft108",
       "type": "ingreso",
       "date": "2026-08-02",
       "amount": 55000,
-      "description": "Trajo en efectivo no se consigno"
+      "description": "Trajo en efectivo no se consigno",
+      "vehicle_id": "v1"
     },
     {
       "id": "1786070387355t7wct",
       "type": "gasto",
       "date": "2026-08-06",
       "amount": 205000,
-      "description": "Mantenimiento auto"
+      "description": "Mantenimiento auto",
+      "vehicle_id": "v1"
     },
     {
       "id": "178607401274631xr8",
       "type": "gasto",
       "date": "2026-08-02",
       "amount": 45000,
-      "description": "Corte del peludo 4 patas"
+      "description": "Corte del peludo 4 patas",
+      "vehicle_id": "v1"
     }
   ],
   "notes": [],
