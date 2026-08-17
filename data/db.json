@@ -17,6 +17,12 @@
       "name": "Mauricio",
       "password": "Socios2026",
       "role": "admin"
+    },
+    {
+      "id": 1786968969731,
+      "name": "Elsa",
+      "password": "Socios2026!",
+      "role": "superadmin"
     }
   ],
   "km": [
