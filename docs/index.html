@@ -123,6 +123,7 @@ nav a .icon{font-size:1.15rem;margin-bottom:1px}
 <div id="page-ahorro" class="hidden"></div>
 <div id="page-backup" class="hidden"></div>
 <div id="page-notas" class="hidden"></div>
+<div id="page-infracciones" class="hidden"></div>
 </div>
 <nav id="main-nav"></nav>
 </div>
@@ -163,7 +164,7 @@ function saveToken(){const t=document.getElementById('setup-token').value.trim()
 
 // Nav
 function buildNav(){
-  const items=[{id:'inicio',i:'📊',l:'Inicio'},{id:'km',i:'🛣️',l:'Km'},{id:'entregas',i:'💰',l:'Entregas'},{id:'gastos',i:'💸',l:'Gastos'},{id:'caja',i:'📦',l:'Caja'},{id:'ahorro',i:'🐷',l:'Ahorro'},{id:'backup',i:'💾',l:'Backup'},{id:'notas',i:'📝',l:'Notas'}];
+  const items=[{id:'inicio',i:'📊',l:'Inicio'},{id:'km',i:'🛣️',l:'Km'},{id:'entregas',i:'💰',l:'Entregas'},{id:'gastos',i:'💸',l:'Gastos'},{id:'caja',i:'📦',l:'Caja'},{id:'ahorro',i:'🐷',l:'Ahorro'},{id:'infracciones',i:'🚨',l:'Multas'},{id:'backup',i:'💾',l:'Backup'},{id:'notas',i:'📝',l:'Notas'}];
   document.getElementById('main-nav').innerHTML=items.map(x=>`<a href="#" onclick="nav('${x.id}')" id="nav-${x.id}" class="${x.id===currentPage?'active':''}"><span class="icon">${x.i}</span>${x.l}</a>`).join('');
 }
 function nav(p){document.querySelectorAll('[id^="page-"]').forEach(el=>el.classList.add('hidden'));document.getElementById('page-'+p).classList.remove('hidden');document.querySelectorAll('#main-nav a').forEach(a=>a.classList.remove('active'));const el=document.getElementById('nav-'+p);if(el)el.classList.add('active');currentPage=p;render(p)}
@@ -178,7 +179,7 @@ function monthRange(){const now=new Date(),s=new Date(now.getFullYear(),now.getM
 function inR(d,f,t){return d>=f&&d<=t}
 function uid(){return Date.now()+''+Math.random().toString(36).substr(2,5)}
 
-function render(p){switch(p){case'inicio':rDash();break;case'km':rKm();break;case'entregas':rEnt();break;case'gastos':rGas();break;case'caja':rCaja();break;case'ahorro':rAhorro();break;case'backup':rBackup();break;case'notas':rNotas();break}}
+function render(p){switch(p){case'inicio':rDash();break;case'km':rKm();break;case'entregas':rEnt();break;case'gastos':rGas();break;case'caja':rCaja();break;case'ahorro':rAhorro();break;case'infracciones':rInfracciones();break;case'backup':rBackup();break;case'notas':rNotas();break}}
 
 const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 function groupByMonth(recs,dateField){
@@ -191,6 +192,18 @@ function accordion(groups,renderItem,totalFn){
   if(groups.length===0)return'<p class="text-xs">Sin registros</p>';
   return groups.map((g,i)=>{const total=totalFn?totalFn(g.items):'';return`<div style="border:1px solid #eee;border-radius:10px;margin-bottom:8px;overflow:hidden"><button onclick="this.nextElementSibling.classList.toggle('hidden');this.querySelector('.arrow').classList.toggle('open')" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#fafafa;border:none;cursor:pointer"><span style="font-weight:700;font-size:.85rem">${g.label}</span><span style="display:flex;align-items:center;gap:8px"><span class="text-xs" style="color:#6C3FE0;font-weight:600">${total}</span><span class="arrow${i===0?' open':''}" style="font-size:.7rem;transition:transform .2s;${i===0?'transform:rotate(90deg)':''}">▶</span></span></button><div class="${i===0?'':'hidden'}" style="padding:8px 12px">${g.items.map(renderItem).join('')}</div></div>`}).join('')}
 
+
+// INFRACCIONES
+function rInfracciones(){
+  document.getElementById('page-infracciones').innerHTML=`<h2 class="section-title">🚨 Consulta de Infracciones</h2>
+<div class="card">
+<p class="text-sm mb-3">Consulta infracciones de tránsito en Buenos Aires ingresando el DNI del conductor.</p>
+<a href="https://buenosaires.gob.ar/licenciasdeconducir/consulta-de-infracciones/?actas=transito" target="_blank" class="btn" style="display:block;text-align:center;text-decoration:none">🔍 Consultar infracciones (CABA)</a>
+</div>
+<div class="card" style="background:#fffbeb;border-color:#fde68a">
+<p class="text-xs" style="color:#92400e">Se abre en la página oficial del Gobierno de Buenos Aires. Necesitas el DNI del conductor.</p>
+</div>`;
+}
 
 // GANANCIA MENSUAL
 function buildMonthlyGanancia(){
