@@ -195,9 +195,11 @@ function accordion(groups,renderItem,totalFn){
 
 // INFRACCIONES
 function rInfracciones(){
+  const esSuperAdmin=isSuperAdmin();
   document.getElementById('page-infracciones').innerHTML=`<h2 class="section-title">🚨 Consulta de Infracciones</h2>
 <div class="card">
-<p class="text-sm mb-3">Consulta infracciones de tránsito en Buenos Aires ingresando el DNI del conductor.</p>
+<p class="text-sm mb-3">Consulta infracciones de tránsito en Buenos Aires.</p>
+${esSuperAdmin?`<div style="background:#f0f0f0;padding:10px 14px;border-radius:10px;margin-bottom:12px"><p class="text-xs" style="color:#555">DNI conductor:</p><p style="font-size:1.1rem;font-weight:700;color:#333;letter-spacing:1px">94.827.784</p></div>`:''}
 <a href="https://buenosaires.gob.ar/licenciasdeconducir/consulta-de-infracciones/?actas=transito" target="_blank" class="btn" style="display:block;text-align:center;text-decoration:none">🔍 Consultar infracciones (CABA)</a>
 </div>
 <div class="card" style="background:#fffbeb;border-color:#fde68a">
