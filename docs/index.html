@@ -366,7 +366,25 @@ function rBackup(){document.getElementById('page-backup').innerHTML=`<h2 class="
 <div class="backup-btn" onclick="downloadBackup()"><div class="icon">⬇️</div><div><div class="text">Descargar backup</div><div class="desc">Guarda un archivo JSON con todos los datos actuales</div></div></div>
 <div class="backup-btn" onclick="document.getElementById('restore-input').click()"><div class="icon">⬆️</div><div><div class="text">Restaurar backup</div><div class="desc">Carga un archivo JSON previamente descargado</div></div></div>
 <div class="card mt-2" style="background:#fffbeb;border-color:#fde68a"><p class="text-xs" style="color:#92400e">⚠️ Restaurar reemplaza TODOS los datos actuales con los del archivo.</p></div>`}
-function downloadBackup(){const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='auto-backup-'+today()+'.json';a.click();URL.revokeObjectURL(url)}
+async function downloadBackup(){
+  // Incluir recibos como base64 en el backup
+  const backupData=JSON.parse(JSON.stringify(db));
+  const recibos={};
+  for(const d of backupData.deliveries||[]){
+    if(d.recibo_url){
+      try{
+        const r=await fetch(d.recibo_url);
+        if(r.ok){
+          const blob=await r.blob();
+          const b64=await new Promise(res=>{const rd=new FileReader();rd.onload=()=>res(rd.result);rd.readAsDataURL(blob)});
+          recibos[d.id]=b64;
+        }
+      }catch(e){console.error('No se pudo incluir recibo:',d.id,e)}
+    }
+  }
+  backupData._recibos_base64=recibos;
+  const blob=new Blob([JSON.stringify(backupData,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='auto-backup-'+today()+'.json';a.click();URL.revokeObjectURL(url)
+}
 async function restoreDB(e){const file=e.target.files[0];if(!file)return;if(!confirm('¿Restaurar? Esto reemplaza TODOS los datos actuales.'))return;const text=await file.text();try{const parsed=JSON.parse(text);
 // Detect old format (has "entregas" instead of "deliveries")
 if(parsed.version&&parsed.entregas){
@@ -380,6 +398,22 @@ if(parsed.version&&parsed.entregas){
   // New format
   db=parsed;if(!db.petty_cash)db.petty_cash=[];if(!db.savings)db.savings=[];if(!db.savings_goal)db.savings_goal={target:0,title:'Meta de ahorro'};
 } else {throw new Error('Formato no reconocido')}
+// Restaurar recibos embebidos si existen
+if(parsed._recibos_base64){
+  for(const[id,b64]of Object.entries(parsed._recibos_base64)){
+    const d=db.deliveries.find(x=>x.id===id);
+    if(d&&b64){
+      try{
+        const base64Clean=b64.replace(/^data:[^;]+;base64,/,'');
+        const ext=b64.match(/^data:image\/(\w+)/)?.[1]||'png';
+        const filename=`data/recibos/recibo-${d.week_end}-${Date.now()}.${ext}`;
+        const r=await GH.put(filename,base64Clean,null,true);
+        d.recibo_url=r.content.download_url;
+      }catch(err){console.error('Error restaurando recibo:',id,err)}
+    }
+  }
+  delete db._recibos_base64;
+}
 await saveDB();alert('Datos restaurados correctamente.');rBackup()}catch(err){alert('Error: archivo invalido. '+err.message)}e.target.value=''}
 
 // NOTAS
