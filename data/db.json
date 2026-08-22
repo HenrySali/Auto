@@ -136,7 +136,10 @@
       "notes": "Completos entrega",
       "user": "Henry",
       "date": "2026-06-20",
-      "vehicle_id": "v1"
+      "vehicle_id": "v1",
+      "recibo_urls": [
+        "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-06-21-1787427069370-ddcmn.jpg"
+      ]
     },
     {
       "id": "d1",
