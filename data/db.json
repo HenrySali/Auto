@@ -185,7 +185,11 @@
       "user": "Henry",
       "date": "2026-07-18",
       "vehicle_id": "v1",
-      "recibo_urls": []
+      "recibo_urls": [
+        "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-07-19-1787417147629-926s0.jpg",
+        "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-07-19-1787417149745-0cpaf.jpg",
+        "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-07-19-1787417151037-mwkqv.jpg"
+      ]
     },
     {
       "id": "1786070074663xlptl",
