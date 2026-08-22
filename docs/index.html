@@ -516,7 +516,7 @@ function rEnt(){
 ${deudaTotal>0?`<div class="card" style="background:#fee2e2;border-color:#fca5a5"><div class="flex-between"><p class="text-sm" style="color:#991b1b">⚠️ Deuda acumulada</p><p class="text-sm" style="color:#991b1b;font-weight:800">${fmt(deudaTotal)}</p></div></div>`:''}
 <div class="card stat"><p class="value text-success">${fmt(totalMes)}</p><p class="label-text">Total mes actual (${entregasMes} entregas)</p></div>
 <div class="card"><form onsubmit="addEnt(event)"><label>Fecha de entrega</label><input type="date" id="ent-date" value="${today()}" required><div class="grid-2"><div><label>Km semana (auto: ${autoKm})</label><input type="number" id="ent-km" value="${autoKm}"></div><div><label>Pagado</label><input type="number" id="ent-p" value="420000" required></div></div><label>Notas (opcional)</label><input type="text" id="ent-notes" placeholder="Observaciones"><button class="btn" type="submit">Registrar entrega</button></form></div>
-<div class="card">${recs.length===0?'<p class="text-xs">Sin entregas</p>':(()=>{const groups=groupByMonth(recs,'week_start');return accordion(groups,d=>{const allDels=vDeliveries();const entNum=allDels.indexOf(d)+1;const st=d.amount_paid>=RENTA?'pagado':d.amount_paid>0?'parcial':'pendiente';const diff=RENTA-(d.amount_paid||0);const gastos=vExpenses().filter(e=>e.date>=d.week_start&&e.date<=d.week_end);const cajaDelaSemana=vPettyCash().filter(p=>p.type==='ingreso'&&p.date>=d.week_start&&p.date<=d.week_end).reduce((s,p)=>s+p.amount,0);const totalGas=gastos.reduce((s,e)=>s+e.amount,0);const neto=d.amount_paid-totalGas-cajaDelaSemana;const tieneRecibo=!!d.recibo_url;return`<div class="list-item"><div class="flex-between"><div><strong class="text-sm">#${entNum} - ${d.week_start} - ${d.week_end}</strong><br><span class="text-xs">${fmt(d.amount_paid)} - ${d.km_total||0} km${d.notes?' - '+d.notes:''}</span>${st==='parcial'?`<br><span class="text-xs text-danger">Debe: ${fmt(diff)}</span>`:''}${cajaDelaSemana>0?`<br><span class="text-xs text-warning">Caja tomada: ${fmt(cajaDelaSemana)}</span>`:''}</div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span class="badge badge-${st==='pagado'?'green':st==='parcial'?'yellow':'red'}">${st}</span>${tieneRecibo?'<span class="badge" style="background:#dbeafe;color:#1d4ed8">🧾 Recibo</span>':'<span class="text-xs" style="color:#ccc">Sin recibo</span>'}</div></div><div style="margin-top:8px;display:flex;gap:6px;align-items:center">${tieneRecibo?`<a href="${d.recibo_url}" target="_blank" style="font-size:.75rem;color:#1d4ed8;text-decoration:none;background:#eff6ff;padding:4px 10px;border-radius:8px;font-weight:600">🧾 Ver</a>${isSuperAdmin()?`<button onclick="delRecibo('${d.id}')" style="font-size:.7rem;background:#fee2e2;color:#991b1b;border:none;padding:4px 8px;border-radius:8px;cursor:pointer">✕</button>`:''}`:`<label style="font-size:.75rem;color:#1d4ed8;background:#eff6ff;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:600">📎 Adjuntar recibo<input type="file" accept="image/*,.pdf" style="display:none" onchange="subirRecibo('${d.id}',this)"></label>`}${isSuperAdmin()?`<span class="text-xs text-primary" style="cursor:pointer;margin-left:auto" onclick="editEnt('${d.id}')">✏️</span><span class="text-xs text-danger" style="cursor:pointer" onclick="delEnt('${d.id}')">✕</span>`:''}</div>${totalGas>0||cajaDelaSemana>0?`<div style="margin-top:8px;padding:8px;background:#fafafa;border-radius:8px">${gastos.length>0?`<p class="text-xs" style="font-weight:700;color:#555;margin-bottom:4px">Gastos:</p>${gastos.map(g=>`<div class="flex-between text-xs"><span>${g.description||g.category}</span><span class="text-danger">${fmt(g.amount)}</span></div>`).join('')}`:''}<div class="flex-between text-sm mt-2" style="border-top:1px solid #eee;padding-top:4px"><strong>Neto</strong><strong class="${neto>=0?'text-success':'text-danger'}">${fmt(neto)}</strong></div></div>`:''}</div>`},items=>fmt(items.reduce((s,d)=>s+(d.amount_paid||0),0)))})()}</div>`}
+<div class="card">${recs.length===0?'<p class="text-xs">Sin entregas</p>':(()=>{const groups=groupByMonth(recs,'week_start');return accordion(groups,d=>{const allDels=vDeliveries();const entNum=allDels.indexOf(d)+1;const st=d.amount_paid>=RENTA?'pagado':d.amount_paid>0?'parcial':'pendiente';const diff=RENTA-(d.amount_paid||0);const gastos=vExpenses().filter(e=>e.date>=d.week_start&&e.date<=d.week_end);const cajaDelaSemana=vPettyCash().filter(p=>p.type==='ingreso'&&p.date>=d.week_start&&p.date<=d.week_end).reduce((s,p)=>s+p.amount,0);const totalGas=gastos.reduce((s,e)=>s+e.amount,0);const neto=d.amount_paid-totalGas-cajaDelaSemana;const recibos=reciboList(d);const tieneRecibo=recibos.length>0;return`<div class="list-item"><div class="flex-between"><div><strong class="text-sm">#${entNum} - ${d.week_start} - ${d.week_end}</strong><br><span class="text-xs">${fmt(d.amount_paid)} - ${d.km_total||0} km${d.notes?' - '+d.notes:''}</span>${st==='parcial'?`<br><span class="text-xs text-danger">Debe: ${fmt(diff)}</span>`:''}${cajaDelaSemana>0?`<br><span class="text-xs text-warning">Caja tomada: ${fmt(cajaDelaSemana)}</span>`:''}</div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span class="badge badge-${st==='pagado'?'green':st==='parcial'?'yellow':'red'}">${st}</span>${tieneRecibo?`<span class="badge" style="background:#dbeafe;color:#1d4ed8">🧾 ${recibos.length>1?recibos.length+' Recibos':'Recibo'}</span>`:'<span class="text-xs" style="color:#ccc">Sin recibo</span>'}</div></div><div style="margin-top:8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap">${recibos.map((u,i)=>`<span style="display:inline-flex;align-items:center;gap:2px;background:#eff6ff;border-radius:8px;padding:2px 4px 2px 10px"><a href="${u}" target="_blank" style="font-size:.75rem;color:#1d4ed8;text-decoration:none;font-weight:600">🧾 Ver${recibos.length>1?' '+(i+1):''}</a>${isSuperAdmin()?`<button onclick="delRecibo('${d.id}',${i})" title="Eliminar este recibo" style="font-size:.7rem;background:#fee2e2;color:#991b1b;border:none;padding:3px 7px;border-radius:6px;cursor:pointer">✕</button>`:''}</span>`).join('')}<label style="font-size:.75rem;color:#1d4ed8;background:#eff6ff;padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:600">📎 ${tieneRecibo?'Agregar recibo':'Adjuntar recibo'}<input type="file" accept="image/*,.pdf" multiple style="display:none" onchange="subirRecibo('${d.id}',this)"></label>${isSuperAdmin()?`<span class="text-xs text-primary" style="cursor:pointer;margin-left:auto" onclick="editEnt('${d.id}')">✏️</span><span class="text-xs text-danger" style="cursor:pointer" onclick="delEnt('${d.id}')">✕</span>`:''}</div>${totalGas>0||cajaDelaSemana>0?`<div style="margin-top:8px;padding:8px;background:#fafafa;border-radius:8px">${gastos.length>0?`<p class="text-xs" style="font-weight:700;color:#555;margin-bottom:4px">Gastos:</p>${gastos.map(g=>`<div class="flex-between text-xs"><span>${g.description||g.category}</span><span class="text-danger">${fmt(g.amount)}</span></div>`).join('')}`:''}<div class="flex-between text-sm mt-2" style="border-top:1px solid #eee;padding-top:4px"><strong>Neto</strong><strong class="${neto>=0?'text-success':'text-danger'}">${fmt(neto)}</strong></div></div>`:''}</div>`},items=>fmt(items.reduce((s,d)=>s+(d.amount_paid||0),0)))})()}</div>`}
 async function addEnt(e){
   e.preventDefault();
   const dateVal=document.getElementById('ent-date').value;
@@ -540,30 +540,37 @@ async function editEnt(id){
   await saveDB();rEnt();
 }
 
+// Devuelve la lista de recibos de una entrega (compatible con el campo viejo recibo_url)
+function reciboList(d){return (d.recibo_urls&&d.recibo_urls.length)?d.recibo_urls:(d.recibo_url?[d.recibo_url]:[]);}
+// Normaliza a recibo_urls (array) y elimina el campo viejo recibo_url
+function ensureRecibos(d){if(!Array.isArray(d.recibo_urls))d.recibo_urls=d.recibo_url?[d.recibo_url]:[];if('recibo_url'in d)delete d.recibo_url;return d.recibo_urls;}
+
 async function subirRecibo(id,input){
-  if(!input.files||!input.files[0])return;
-  const file=input.files[0];
-  if(file.size>10*1024*1024){alert('Archivo muy grande (max 10MB)');return}
+  if(!input.files||!input.files.length)return;
   const d=db.deliveries.find(x=>x.id===id);if(!d)return;
-  const reader=new FileReader();
-  reader.onload=async function(){
-    const base64=reader.result.replace(/^data:[^;]+;base64,/,'');
-    const ext=file.name.split('.').pop().toLowerCase();
-    const filename=`data/recibos/recibo-${d.week_end}-${Date.now()}.${ext}`;
+  const arr=ensureRecibos(d);
+  const files=[...input.files];
+  let subidos=0;
+  for(const file of files){
+    if(file.size>10*1024*1024){alert('Archivo muy grande (max 10MB): '+file.name);continue}
     try{
+      const base64=await new Promise((res,rej)=>{const rd=new FileReader();rd.onload=()=>res(rd.result.replace(/^data:[^;]+;base64,/,''));rd.onerror=rej;rd.readAsDataURL(file)});
+      const ext=file.name.split('.').pop().toLowerCase();
+      const filename=`data/recibos/recibo-${d.week_end}-${Date.now()}-${Math.random().toString(36).slice(2,7)}.${ext}`;
       const r=await GH.put(filename,base64,null,true);
-      d.recibo_url=r.content.download_url;
-      await saveDB();
-      rEnt();
-    }catch(e){alert('Error subiendo recibo: '+e.message)}
-  };
-  reader.readAsDataURL(file);
+      arr.push(r.content.download_url);
+      subidos++;
+    }catch(e){alert('Error subiendo recibo ('+file.name+'): '+e.message)}
+  }
+  input.value='';
+  if(subidos){await saveDB();rEnt()}
 }
 
-async function delRecibo(id){
-  if(!confirm('¿Eliminar recibo de esta semana?'))return;
+async function delRecibo(id,idx){
+  if(!confirm('¿Eliminar este recibo?'))return;
   const d=db.deliveries.find(x=>x.id===id);if(!d)return;
-  d.recibo_url=null;
+  const arr=ensureRecibos(d);
+  if(idx>=0&&idx<arr.length)arr.splice(idx,1);
   await saveDB();
   rEnt();
 }
@@ -611,13 +618,16 @@ async function downloadBackup(){
   const backupData=JSON.parse(JSON.stringify(db));
   const recibos={};
   for(const d of backupData.deliveries||[]){
-    if(d.recibo_url){
+    const urls=reciboList(d);
+    if(!urls.length)continue;
+    recibos[d.id]=[];
+    for(const u of urls){
       try{
-        const r=await fetch(d.recibo_url);
+        const r=await fetch(u);
         if(r.ok){
           const blob=await r.blob();
           const b64=await new Promise(res=>{const rd=new FileReader();rd.onload=()=>res(rd.result);rd.readAsDataURL(blob)});
-          recibos[d.id]=b64;
+          recibos[d.id].push(b64);
         }
       }catch(e){console.error('No se pudo incluir recibo:',d.id,e)}
     }
@@ -636,17 +646,23 @@ if(parsed.version&&parsed.entregas){
   db=parsed;if(!db.petty_cash)db.petty_cash=[];if(!db.savings)db.savings=[];if(!db.savings_goal)db.savings_goal={target:0,title:'Meta de ahorro'};if(!db.vehicles)db.vehicles=[];
 } else {throw new Error('Formato no reconocido')}
 if(parsed._recibos_base64){
-  for(const[id,b64]of Object.entries(parsed._recibos_base64)){
+  for(const[id,val]of Object.entries(parsed._recibos_base64)){
     const d=db.deliveries.find(x=>x.id===id);
-    if(d&&b64){
+    if(!d||!val)continue;
+    const lista=Array.isArray(val)?val:[val];
+    const nuevas=[];
+    for(const b64 of lista){
+      if(!b64)continue;
       try{
         const base64Clean=b64.replace(/^data:[^;]+;base64,/,'');
         const ext=b64.match(/^data:image\/(\w+)/)?.[1]||'png';
-        const filename=`data/recibos/recibo-${d.week_end}-${Date.now()}.${ext}`;
+        const filename=`data/recibos/recibo-${d.week_end}-${Date.now()}-${Math.random().toString(36).slice(2,7)}.${ext}`;
         const r=await GH.put(filename,base64Clean,null,true);
-        d.recibo_url=r.content.download_url;
+        nuevas.push(r.content.download_url);
       }catch(err){console.error('Error restaurando recibo:',id,err)}
     }
+    d.recibo_urls=nuevas;
+    if('recibo_url'in d)delete d.recibo_url;
   }
   delete db._recibos_base64;
 }
