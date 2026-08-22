@@ -200,7 +200,10 @@
       "amount_paid": 420000,
       "notes": null,
       "user": "Henry",
-      "vehicle_id": "v1"
+      "vehicle_id": "v1",
+      "recibo_urls": [
+        "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-08-02-1787417931774-hona1.jpg"
+      ]
     },
     {
       "id": "1786070827874qaolz",
