@@ -203,7 +203,11 @@
       "amount_paid": 420000,
       "notes": null,
       "user": "Henry",
-      "vehicle_id": "v1"
+      "vehicle_id": "v1",
+      "recibo_urls": [
+        "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-07-26-1787416242744-l2adm.jpg",
+        "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-07-26-1787416244461-h10uf.jpg"
+      ]
     },
     {
       "id": "1786327866173ph3ah",
