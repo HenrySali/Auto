@@ -147,7 +147,10 @@
       "notes": "Completo",
       "user": "Henry",
       "date": "2026-06-27",
-      "vehicle_id": "v1"
+      "vehicle_id": "v1",
+      "recibo_urls": [
+        "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-06-28-1787427054474-e3hfz.jpg"
+      ]
     },
     {
       "id": "d2",
