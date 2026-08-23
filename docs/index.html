@@ -614,10 +614,15 @@ function rBackup(){document.getElementById('page-backup').innerHTML=`<h2 class="
 <p class="text-xs mb-3">Descarga o restaura todos los datos de la aplicacion.</p>
 <div class="backup-btn" onclick="downloadBackup()"><div class="icon">⬇️</div><div><div class="text">Descargar backup</div><div class="desc">Guarda un archivo JSON con todos los datos actuales</div></div></div>
 <div class="backup-btn" onclick="document.getElementById('restore-input').click()"><div class="icon">⬆️</div><div><div class="text">Restaurar backup</div><div class="desc">Carga un archivo JSON previamente descargado</div></div></div>
+<p id="backup-status" class="text-xs" style="margin-top:10px;font-weight:600;min-height:1em"></p>
 <div class="card mt-2" style="background:#fffbeb;border-color:#fde68a"><p class="text-xs" style="color:#92400e">⚠️ Restaurar reemplaza TODOS los datos actuales con los del archivo.</p></div>`}
 async function downloadBackup(){
+  const setStatus=(t,color='#6C3FE0')=>{const el=document.getElementById('backup-status');if(el){el.textContent=t;el.style.color=color;}};
   const backupData=JSON.parse(JSON.stringify(db));
   const recibos={};
+  const totalRecibos=(backupData.deliveries||[]).reduce((s,d)=>s+reciboList(d).length,0);
+  let hechos=0,fallidos=0;
+  setStatus(totalRecibos?`⏳ Preparando backup... incluyendo recibos (0/${totalRecibos})`:'⏳ Preparando backup...');
   for(const d of backupData.deliveries||[]){
     const urls=reciboList(d);
     if(!urls.length)continue;
@@ -629,12 +634,20 @@ async function downloadBackup(){
           const blob=await r.blob();
           const b64=await new Promise(res=>{const rd=new FileReader();rd.onload=()=>res(rd.result);rd.readAsDataURL(blob)});
           recibos[d.id].push(b64);
-        }
-      }catch(e){console.error('No se pudo incluir recibo:',d.id,e)}
+          hechos++;
+        }else{fallidos++;console.error('No se pudo incluir recibo (HTTP '+r.status+'):',d.id,u)}
+      }catch(e){fallidos++;console.error('No se pudo incluir recibo:',d.id,e)}
+      setStatus(`⏳ Preparando backup... incluyendo recibos (${hechos+fallidos}/${totalRecibos})`);
     }
   }
   backupData._recibos_base64=recibos;
-  const blob=new Blob([JSON.stringify(backupData,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='auto-backup-'+today()+'.json';a.click();URL.revokeObjectURL(url)
+  const blob=new Blob([JSON.stringify(backupData,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='auto-backup-'+today()+'.json';a.click();URL.revokeObjectURL(url);
+  if(fallidos>0){
+    setStatus(`⚠️ Backup descargado, pero ${fallidos} recibo(s) no se pudieron incluir. Se guardaron ${hechos} de ${totalRecibos}.`,'#b45309');
+    alert(`Atencion: ${fallidos} recibo(s) no se pudieron incluir en el backup (revisa tu conexion). Se guardaron ${hechos} de ${totalRecibos}. El resto de los datos se descargo correctamente.`);
+  }else{
+    setStatus(`✅ Backup descargado correctamente${totalRecibos?` (incluidos ${hechos} recibo${hechos!==1?'s':''})`:''}.`,'#15803d');
+  }
 }
 async function restoreDB(e){const file=e.target.files[0];if(!file)return;if(!confirm('¿Restaurar? Esto reemplaza TODOS los datos actuales.'))return;const text=await file.text();try{const parsed=JSON.parse(text);
 if(parsed.version&&parsed.entregas){
