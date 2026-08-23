@@ -34,8 +34,9 @@ label{display:block;font-size:.78rem;font-weight:600;color:#555;margin-bottom:4p
 </head>
 <body>
 <style>
-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #eee;display:flex;justify-content:space-around;padding:6px 2px 8px;z-index:100;box-shadow:0 -2px 8px rgba(0,0,0,.04)}
-nav a{display:flex;flex-direction:column;align-items:center;font-size:.6rem;color:#aaa;text-decoration:none;padding:4px 6px;border-radius:8px;transition:color .2s}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #eee;display:flex;justify-content:flex-start;padding:6px 2px 8px;z-index:100;box-shadow:0 -2px 8px rgba(0,0,0,.04);overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav a{flex:0 0 auto;min-width:58px;display:flex;flex-direction:column;align-items:center;font-size:.6rem;color:#aaa;text-decoration:none;padding:4px 6px;border-radius:8px;transition:color .2s;white-space:nowrap}
 nav a.active{color:#6C3FE0;font-weight:700}
 nav a .icon{font-size:1.15rem;margin-bottom:1px}
 .stat{text-align:center}
