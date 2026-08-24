@@ -124,6 +124,13 @@
       "km_start": 31502,
       "km_end": 32855,
       "vehicle_id": "v1"
+    },
+    {
+      "id": "1787530426586hx40n",
+      "date": "2026-08-24",
+      "km_start": 32855,
+      "km_end": 34101,
+      "vehicle_id": "v1"
     }
   ],
   "deliveries": [
