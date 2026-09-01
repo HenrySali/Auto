@@ -487,8 +487,22 @@ ${f?`<p class="text-xs" style="text-align:center;margin-bottom:10px">${f} → ${
 ${buildMonthlyGanancia()}`}
 
 // KM
-function rKm(){const recs=[...vKm()].sort((a,b)=>b.date.localeCompare(a.date));const groups=groupByMonth(recs,'date');document.getElementById('page-km').innerHTML=`<h2 class="section-title">Kilometraje</h2><div class="card"><form onsubmit="addKm(event)"><div class="grid-2"><div><label>Fecha</label><input type="date" id="km-date" value="${today()}"></div><div></div></div><div class="grid-2"><div><label>Km inicio</label><input type="number" id="km-start" required></div><div><label>Km fin</label><input type="number" id="km-end" required></div></div><button class="btn" type="submit">Registrar</button></form></div>${accordion(groups,r=>`<div class="list-item flex-between"><div><strong class="text-sm">${r.date}</strong><br><span class="text-xs">${r.km_start} → ${r.km_end}</span></div><span class="text-primary" style="font-weight:700">${r.km_end-r.km_start} km</span></div>`,items=>`${items.reduce((s,r)=>s+(r.km_end-r.km_start),0)} km`)}`}
+function rKm(){const recs=[...vKm()].sort((a,b)=>b.date.localeCompare(a.date));const groups=groupByMonth(recs,'date');document.getElementById('page-km').innerHTML=`<h2 class="section-title">Kilometraje</h2><div class="card"><form onsubmit="addKm(event)"><div class="grid-2"><div><label>Fecha</label><input type="date" id="km-date" value="${today()}"></div><div></div></div><div class="grid-2"><div><label>Km inicio</label><input type="number" id="km-start" required></div><div><label>Km fin</label><input type="number" id="km-end" required></div></div><button class="btn" type="submit">Registrar</button></form></div>${accordion(groups,r=>`<div class="list-item flex-between"><div><strong class="text-sm">${r.date}</strong><br><span class="text-xs">${r.km_start} → ${r.km_end}</span></div><div style="display:flex;align-items:center;gap:8px"><span class="text-primary" style="font-weight:700">${r.km_end-r.km_start} km</span>${isSuperAdmin()?`<span class="text-xs text-primary" style="cursor:pointer" onclick="editKm('${r.id}')">✏️</span><span class="text-xs text-danger" style="cursor:pointer" onclick="delKm('${r.id}')">✕</span>`:''}</div></div>`,items=>`${items.reduce((s,r)=>s+(r.km_end-r.km_start),0)} km`)}`}
 async function addKm(e){e.preventDefault();const k={id:uid(),date:document.getElementById('km-date').value,km_start:+document.getElementById('km-start').value,km_end:+document.getElementById('km-end').value,vehicle_id:selectedVehicle.id};if(k.km_end<k.km_start)return alert('Km fin debe ser mayor');db.km.push(k);await saveDB();rKm()}
+async function editKm(id){
+  const code=prompt('Codigo para editar:');
+  if(code!=='001') return alert('Codigo incorrecto');
+  const r=db.km.find(x=>x.id===id);if(!r)return;
+  const nd=prompt('Fecha (YYYY-MM-DD):',r.date);if(!nd)return;
+  const ns=prompt('Km inicio:',r.km_start);if(ns===null)return;
+  const ne=prompt('Km fin:',r.km_end);if(ne===null)return;
+  const s=+ns,ef=+ne;
+  if(isNaN(s)||isNaN(ef))return alert('Valores invalidos');
+  if(ef<s)return alert('Km fin debe ser mayor o igual al inicio');
+  r.date=nd;r.km_start=s;r.km_end=ef;
+  await saveDB();rKm();
+}
+async function delKm(id){const code=prompt('Codigo para eliminar:');if(code!=='001')return alert('Codigo incorrecto');db.km=db.km.filter(x=>x.id!==id);await saveDB();rKm()}
 
 // ENTREGAS
 function getAutoKm(){
