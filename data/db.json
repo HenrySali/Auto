@@ -315,6 +315,17 @@
         "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-08-30-1788264507795-zdd8y.png",
         "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-08-30-1788291248942-cspdl.png"
       ]
+    },
+    {
+      "id": "1788834262194i5n4z",
+      "week_start": "2026-08-31",
+      "week_end": "2026-09-06",
+      "date": "2026-09-05",
+      "km_total": 1038,
+      "amount_paid": 420000,
+      "notes": null,
+      "user": "Henry S",
+      "vehicle_id": "v1"
     }
   ],
   "expenses": [
