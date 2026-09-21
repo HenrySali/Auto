@@ -427,7 +427,15 @@
       "vehicle_id": "v1"
     }
   ],
-  "notes": [],
+  "notes": [
+    {
+      "id": "17900127805405ki2h",
+      "author": "Henry S",
+      "content": "Leandro no ha completado la cuota del sábado 19 de sep. Dando solo 220 hasta el momento",
+      "created_at": "2026-09-21T17:46:20.540Z",
+      "vehicle_id": "v1"
+    }
+  ],
   "savings": [],
   "savings_goal": {
     "target": 0,
