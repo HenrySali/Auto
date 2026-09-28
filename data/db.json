@@ -173,6 +173,13 @@
       "km_start": 38154,
       "km_end": 39661,
       "vehicle_id": "v1"
+    },
+    {
+      "id": "1790558560653flzpp",
+      "date": "2026-09-28",
+      "km_start": 39661,
+      "km_end": 40610,
+      "vehicle_id": "v1"
     }
   ],
   "deliveries": [
