@@ -424,7 +424,10 @@
       "amount_paid": 420000,
       "notes": null,
       "user": "Henry S",
-      "vehicle_id": "v1"
+      "vehicle_id": "v1",
+      "recibo_urls": [
+        "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-10-04-1790558696475-552xt.pdf"
+      ]
     }
   ],
   "expenses": [
