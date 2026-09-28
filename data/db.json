@@ -394,17 +394,6 @@
       "vehicle_id": "v1"
     },
     {
-      "id": "1790558654465f8nmm",
-      "week_start": "2026-09-21",
-      "week_end": "2026-09-27",
-      "date": "2026-09-27",
-      "km_total": 949,
-      "amount_paid": 420000,
-      "notes": null,
-      "user": "Henry S",
-      "vehicle_id": "v1"
-    },
-    {
       "id": "1790558688356e2yeu",
       "week_start": "2026-09-28",
       "week_end": "2026-10-04",
