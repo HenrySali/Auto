@@ -407,6 +407,17 @@
         "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-10-04-1790855903969-30b9l.png",
         "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-09-27-1790947380904-53gw8.png"
       ]
+    },
+    {
+      "id": "1791133824549tnwdk",
+      "week_start": "2026-09-28",
+      "week_end": "2026-10-04",
+      "date": "2026-10-04",
+      "km_total": 1587,
+      "amount_paid": 0,
+      "notes": "El conductor debe esta cuota",
+      "user": "Henry S",
+      "vehicle_id": "v1"
     }
   ],
   "expenses": [
