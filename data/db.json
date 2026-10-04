@@ -180,6 +180,13 @@
       "km_start": 39661,
       "km_end": 40610,
       "vehicle_id": "v1"
+    },
+    {
+      "id": "179113381053615gdd",
+      "date": "2026-10-04",
+      "km_start": 40610,
+      "km_end": 42197,
+      "vehicle_id": "v1"
     }
   ],
   "deliveries": [
