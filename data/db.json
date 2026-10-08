@@ -418,17 +418,6 @@
       "notes": "El conductor debe esta cuota",
       "user": "Henry S",
       "vehicle_id": "v1"
-    },
-    {
-      "id": "1791495063624y67lw",
-      "week_start": "2026-09-28",
-      "week_end": "2026-10-04",
-      "date": "2026-10-03",
-      "km_total": 1587,
-      "amount_paid": 216000,
-      "notes": "Usados para el pago del mantenimiento",
-      "user": "Henry S",
-      "vehicle_id": "v1"
     }
   ],
   "expenses": [
