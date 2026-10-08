@@ -428,6 +428,14 @@
       "date": "2026-07-18",
       "description": "Cabify despedida Nadia - compra de dolares",
       "vehicle_id": "v1"
+    },
+    {
+      "id": "1791493969530ylziv",
+      "category": "mantenimiento",
+      "amount": 216000,
+      "date": "2026-10-08",
+      "description": "Mantenimiento de los 1 ros 10000 km luego de los 30000",
+      "vehicle_id": "v1"
     }
   ],
   "petty_cash": [
