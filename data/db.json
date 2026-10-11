@@ -417,7 +417,10 @@
       "amount_paid": 216000,
       "notes": "pago 10000 km",
       "user": "Henry S",
-      "vehicle_id": "v1"
+      "vehicle_id": "v1",
+      "recibo_urls": [
+        "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-10-04-1791733450209-bk9ez.png"
+      ]
     }
   ],
   "expenses": [
