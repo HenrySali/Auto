@@ -208,6 +208,13 @@
       "km_start": 45717,
       "km_end": 47000,
       "vehicle_id": "v1"
+    },
+    {
+      "id": "1792635116779hi05i",
+      "date": "2026-10-22",
+      "km_start": 45717,
+      "km_end": 47000,
+      "vehicle_id": "v1"
     }
   ],
   "deliveries": [
