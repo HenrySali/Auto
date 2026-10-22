@@ -194,6 +194,13 @@
       "km_start": 42197,
       "km_end": 43720,
       "vehicle_id": "v1"
+    },
+    {
+      "id": "1792634823385glsak",
+      "date": "2026-10-22",
+      "km_start": 43720,
+      "km_end": 45717,
+      "vehicle_id": "v1"
     }
   ],
   "deliveries": [
