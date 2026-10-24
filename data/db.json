@@ -471,8 +471,8 @@
       "week_end": "2026-10-18",
       "date": "2026-10-18",
       "km_total": 1997,
-      "amount_paid": 1,
-      "notes": null,
+      "amount_paid": 15000,
+      "notes": "se saldan 15000 de septiembre deuda ",
       "user": "Henry S",
       "vehicle_id": "v1",
       "recibo_urls": [
