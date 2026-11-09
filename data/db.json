@@ -215,6 +215,13 @@
       "km_start": 48084,
       "km_end": 48084,
       "vehicle_id": "v1"
+    },
+    {
+      "id": "1794191545413dfdql",
+      "date": "2026-11-08",
+      "km_start": 48084,
+      "km_end": 49070,
+      "vehicle_id": "v1"
     }
   ],
   "deliveries": [
