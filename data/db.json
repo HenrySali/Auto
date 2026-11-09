@@ -527,17 +527,6 @@
       "notes": null,
       "user": "Henry S",
       "vehicle_id": "v1"
-    },
-    {
-      "id": "17937191628679vy9m",
-      "week_start": "2026-11-02",
-      "week_end": "2026-11-08",
-      "date": "2026-11-08",
-      "km_total": 1084,
-      "amount_paid": 60000,
-      "notes": null,
-      "user": "Henry S",
-      "vehicle_id": "v1"
     }
   ],
   "expenses": [
