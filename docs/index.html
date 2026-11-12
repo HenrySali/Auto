@@ -161,13 +161,19 @@ let selectedVehicle=null;
 // GitHub API
 const GH={
   async get(path){
-    const r=await fetch(`https://api.github.com/repos/${REPO}/${REPO_NAME}/contents/${path}`,{headers:{Authorization:`token ${ghToken}`,Accept:'application/vnd.github.v3+json'}});
+    const url=`https://api.github.com/repos/${REPO}/${REPO_NAME}/contents/${path}?t=${Date.now()}`;
+    const h={Accept:'application/vnd.github.v3+json'};
+    if(ghToken)h.Authorization=`token ${ghToken}`;
+    let r=await fetch(url,{headers:h});
+    // Token vencido/invalido: el repo es publico, reintentar la lectura sin token
+    if(r.status===401){r=await fetch(url,{headers:{Accept:'application/vnd.github.v3+json'}})}
     if(r.status===404)return null;if(!r.ok)throw new Error('GitHub GET error '+r.status);return r.json();
   },
   async put(path,content,sha,isBase64){
     const body={message:'update',content:isBase64?content:btoa(unescape(encodeURIComponent(content))),branch:'main'};
     if(sha)body.sha=sha;
     const r=await fetch(`https://api.github.com/repos/${REPO}/${REPO_NAME}/contents/${path}`,{method:'PUT',headers:{Authorization:`token ${ghToken}`,'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(r.status===401){ghToken='';localStorage.removeItem('gh_token');document.getElementById('token-screen').classList.remove('hidden')}
     if(!r.ok){const e=await r.json();throw new Error(e.message||'GitHub PUT error')}return r.json();
   }
 };
@@ -190,7 +196,7 @@ function vSavings(){return db.savings.filter(r=>r.vehicle_id===selectedVehicle.i
 function vSavingsGoal(){return selectedVehicle.savings_goal||db.savings_goal||{target:0,title:'Meta de ahorro'}}
 
 // Auth
-async function handleLogin(e){e.preventDefault();const n=document.getElementById('login-nombre').value.trim(),cl=document.getElementById('login-clave').value,err=document.getElementById('login-error');err.classList.add('hidden');await loadDB();const u=db.users.find(x=>x.name.toLowerCase()===n.toLowerCase());if(!u||u.password!==cl){err.textContent='Nombre o clave incorrectos';err.classList.remove('hidden');return}currentUser=u;localStorage.setItem('current_user',JSON.stringify(u));showVehicleSelect()}
+async function handleLogin(e){e.preventDefault();const n=document.getElementById('login-nombre').value.trim(),cl=document.getElementById('login-clave').value,err=document.getElementById('login-error');err.classList.add('hidden');await loadDB();if(!db.users.length){err.textContent='No se pudieron cargar los usuarios. Revisa tu conexion e intenta de nuevo.';err.classList.remove('hidden');return}const u=db.users.find(x=>x.name.toLowerCase()===n.toLowerCase());if(!u||u.password!==cl){err.textContent='Nombre o clave incorrectos';err.classList.remove('hidden');return}currentUser=u;localStorage.setItem('current_user',JSON.stringify(u));showVehicleSelect()}
 function logout(){currentUser=null;selectedVehicle=null;localStorage.removeItem('current_user');localStorage.removeItem('selected_vehicle');document.getElementById('app-screen').classList.add('hidden');document.getElementById('vehicle-screen').classList.add('hidden');document.getElementById('login-screen').classList.remove('hidden')}
 function saveToken(){const t=document.getElementById('setup-token').value.trim();if(!t.startsWith('github_pat_')&&!t.startsWith('ghp_')){document.getElementById('token-error').textContent='Token debe empezar con ghp_ o github_pat_';document.getElementById('token-error').classList.remove('hidden');return}ghToken=t;localStorage.setItem('gh_token',t);document.getElementById('token-screen').classList.add('hidden');init()}
 
@@ -702,7 +708,7 @@ async function addNota(e){e.preventDefault();db.notes.push({id:uid(),author:curr
 
 // INIT
 function showApp(){document.getElementById('login-screen').classList.add('hidden');document.getElementById('vehicle-screen').classList.add('hidden');document.getElementById('app-screen').classList.remove('hidden');document.getElementById('header-user').textContent=`${currentUser.name} (${currentUser.role==='superadmin'?'SuperAdmin':currentUser.role==='admin'?'Admin':'Conductor'}) - 🚗 ${selectedVehicle.patente}`;buildNav();nav('inicio')}
-async function init(){if(!ghToken){document.getElementById('token-screen').classList.remove('hidden');return}await loadDB();if(currentUser){const exists=db.users.find(u=>u.id===currentUser.id);if(exists){currentUser=exists;localStorage.setItem('current_user',JSON.stringify(exists));const sv=JSON.parse(localStorage.getItem('selected_vehicle')||'null');if(sv){const v=db.vehicles.find(x=>x.id===sv.id);if(v){selectedVehicle=v;showApp();return;}}showVehicleSelect();return}currentUser=null;localStorage.removeItem('current_user')}document.getElementById('login-screen').classList.remove('hidden')}
+async function init(){await loadDB();if(currentUser){const exists=db.users.find(u=>u.id===currentUser.id);if(exists){currentUser=exists;localStorage.setItem('current_user',JSON.stringify(exists));const sv=JSON.parse(localStorage.getItem('selected_vehicle')||'null');if(sv){const v=db.vehicles.find(x=>x.id===sv.id);if(v){selectedVehicle=v;showApp();return;}}showVehicleSelect();return}currentUser=null;localStorage.removeItem('current_user')}document.getElementById('login-screen').classList.remove('hidden')}
 if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js')}
 let deferredPrompt=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;const b=document.createElement('div');b.id='install-banner';b.innerHTML='<div style="position:fixed;top:0;left:0;right:0;background:#6C3FE0;color:#fff;padding:12px 16px;z-index:300;display:flex;justify-content:space-between;align-items:center;font-size:.85rem"><span>📲 Instalar Auto Manager</span><button onclick="installApp()" style="background:#fff;color:#6C3FE0;border:none;padding:6px 14px;border-radius:8px;font-weight:700;cursor:pointer">Instalar</button></div>';document.body.appendChild(b)});
