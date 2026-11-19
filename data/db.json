@@ -561,7 +561,10 @@
       "amount_paid": 160000,
       "notes": "- 40000 App gps",
       "user": "Henry S",
-      "vehicle_id": "v1"
+      "vehicle_id": "v1",
+      "recibo_urls": [
+        "https://raw.githubusercontent.com/HenrySali/Auto/main/data/recibos/recibo-2026-11-15-1795048367965-etft0.png"
+      ]
     }
   ],
   "expenses": [
