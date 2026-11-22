@@ -566,7 +566,7 @@
       "date": "2026-11-15",
       "km_total": 1154,
       "amount_paid": 210000,
-      "notes": "- 40000 App gps",
+      "notes": null,
       "user": "Henry S",
       "vehicle_id": "v1",
       "recibo_urls": [
